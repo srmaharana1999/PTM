@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "module": "commonjs",
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "strict": true,
+    "esModuleInterop": true,
+    "types": ["node"],
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
