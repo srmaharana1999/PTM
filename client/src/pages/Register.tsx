@@ -42,8 +42,8 @@ const Register = () => {
     }
   };
   return (
-    <div className="w-full h-screen mt-20 flex items-center justify-center">
-      <div className="max-w-lg w-11/12 md:w-full p-6 md:p-10 bg-white/10 border border-white/20">
+    <div className="w-full h-screen flex items-center justify-center">
+      <div className="max-w-lg mt-20 w-11/12 md:w-full p-6 md:p-10 bg-white/10 border border-white/20">
         <h1 className="text-3xl text-center">Register</h1>
         <Formik
           initialValues={initialValues}

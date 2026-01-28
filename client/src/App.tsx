@@ -6,6 +6,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import { useEffect } from "react";
 import { initAuth } from "./features/auth/authThunks";
 import { useAppDispatch } from "./app/hooks";
+import Home from "./pages/Home";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -14,6 +15,7 @@ function App() {
   },[dispatch])
   return (
     <Routes>
+      <Route path="/" element={<Home/>}/>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
