@@ -28,7 +28,7 @@ const Header = () => {
             <NavLink label="Dashboard" href="/dashboard" />
             <button
               onClick={() => dispatch(logoutUser())}
-              className="py-2 px-5 rounded-full bg-black drop-shadow-md drop-shadow-white/20  w-fit text-white/70 hover:bg-white hover:text-black transition-colors duration-400 ease-linear"
+              className="py-2 px-5 rounded-full cursor-pointer bg-black drop-shadow-md drop-shadow-white/20  w-fit text-white/70 hover:bg-white hover:text-black transition-colors duration-400 ease-linear"
             >
               <LuLogOut className="text-xl"/>
             </button>
