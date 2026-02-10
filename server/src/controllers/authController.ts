@@ -12,14 +12,6 @@ const REFRESH_TOKEN_EXPIRES_MS = 7 * 24 * 60 * 60 * 1000;
 
 const isProd = process.env.NODE_ENV === "production";
 
-const refreshTokenCookieOptions = {
-  httpOnly: true,
-  secure: isProd,
-  sameSite: isProd ? "none" : ("lax" as const),
-  path: "/",
-  maxAge: REFRESH_TOKEN_EXPIRES_MS,
-};
-
 // REGISTER
 
 export const register = async (req: Request, res: Response) => {
@@ -105,16 +97,7 @@ export const login = async (req: Request, res: Response) => {
       sessionId: session._id.toString(),
     });
 
-    // // 🔍 LEARNING LOG: Token Creation
-    // console.log('\n========== LOGIN: TOKEN CREATION ==========');
-    // console.log('📧 User:', user.email);
-    // console.log('🔑 Access Token (first 50 chars):', accessToken.substring(0, 100) + '...');
-    // console.log('🔄 Refresh Token (first 50 chars):', refreshToken.substring(0, 100) + '...');
-    // console.log('⏰ Access Token expires in: 15 minutes');
-    // console.log('⏰ Refresh Token expires in: 7 days');
-    // console.log('💾 Session ID:', session._id.toString());
-    // console.log('==========================================\n');
-
+   
     session.refreshToken = refreshToken;
     await session.save();
 
@@ -150,65 +133,47 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
   try {
     const token = req.cookies?.refreshToken;
 
-    // 🔍 LEARNING LOG: Refresh Request Started
-    // console.log('\n========== REFRESH TOKEN FLOW STARTED ==========');
-    // console.log('📥 Refresh token received from cookie:', token ? 'YES ✅' : 'NO ❌');
     
     if (!token) {
-      // console.log('❌ No refresh token found in cookies');
-      // console.log('================================================\n');
+
       return res.status(401).json({ message: "No refresh token is provided" });
     }
 
-    // console.log('🔄 Refresh Token (first 50 chars):', token.substring(0, 100) + '...');
-
+    
     const payload = verifyRefreshToken(token);
     if (!payload) {
-      // console.log('❌ Refresh token verification FAILED');
-      // console.log('================================================\n');
+      
       return res.status(401).json({ message: "Invalid refresh token" });
     }
 
-    // console.log('✅ Refresh token verified successfully');
-    // console.log('👤 User ID from token:', payload.userId);
-    // console.log('💾 Session ID from token:', payload.sessionId);
-
+    
     const session = await Session.findById(payload.sessionId);
     if (!session || !session.isValid) {
-      // console.log('❌ Session not found or invalid');
-      // console.log('================================================\n');
+     
       return res
         .status(401)
         .json({ message: "Session invalid or does not exist" });
     }
 
-    // console.log('✅ Session found in database');
-    // console.log('📅 Session expires at:', session.expiresAt);
-    // console.log('🔒 Session is valid:', session.isValid);
-
+    
     if (session.expiresAt.getTime() < Date.now()) {
-      // console.log('❌ Session has expired');
-      // console.log('================================================\n');
+  
       return res.status(401).json({ message: "Session expired" });
     }
 
     if (session.refreshToken !== token) {
-      // console.log('❌ Token mismatch - possible token reuse attack');
-      // console.log('================================================\n');
+
       return res.status(401).json({ message: "Invalid token mismatch" });
     }
 
-    // console.log('✅ Refresh token matches session');
-
+    
     const user = await User.findById(payload.userId);
     if (!user) {
-      // console.log('❌ User not found');
-      // console.log('================================================\n');
+     
       return res.status(401).json({ message: "User not found" });
     }
 
-    // console.log('✅ User found:', user.email);
-    // console.log('\n🔄 Generating NEW access token...');
+   
 
     const accessToken = signAccessToken({
       userId: user._id.toString(),
@@ -223,11 +188,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
       isEmailVerified: user.isEmailVerified,
     };
 
-    // console.log('🔑 NEW Access Token (first 50 chars):', accessToken.substring(0, 100) + '...');
-    // console.log('✅ Token refresh SUCCESSFUL');
-    // console.log('📤 Sending new access token to client');
-    // console.log('🔄 Refresh token remains the same (not rotated)');
-    // console.log('================================================\n');
+   
 
     return res.status(200).json({
       accessToken,
