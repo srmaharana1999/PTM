@@ -7,254 +7,231 @@ import {
   signRefreshToken,
   verifyRefreshToken,
 } from "../utils/jwt";
+import { AppError } from "../middlewares/errorHandler";
 
 const REFRESH_TOKEN_EXPIRES_MS = 7 * 24 * 60 * 60 * 1000;
-
 const isProd = process.env.NODE_ENV === "production";
 
-// REGISTER
+// ─── Cookie Options Helper ────────────────────────────────────────────────────
+
+const refreshCookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? ("none" as const) : ("lax" as const),
+  path: "/",
+};
+
+// ─── Register ─────────────────────────────────────────────────────────────────
 
 export const register = async (req: Request, res: Response) => {
-  try {
-    const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-    // Validation is now handled by middleware, but keep as fallback
-    if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Name, email and password are required." });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already in use." });
-    }
-
-    const user = await User.create({ name, email, password });
-
-    const userSafe = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isEmailVerified: user.isEmailVerified,
-    };
-
-    return res.status(201).json({
-      message: "User registered successfully",
-      user: userSafe,
-    });
-  } catch (error) {
-    console.error("Registration error", error);
-    return res.status(500).json({ message: "Internal server error" });
+  // Validation middleware runs first, but kept as a safety fallback
+  if (!name || !email || !password) {
+    throw new AppError("Name, email and password are required.", 400);
   }
+
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new AppError("Email already in use.", 409);
+  }
+
+  const user = await User.create({ name, email, password });
+
+  const userSafe = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isEmailVerified: user.isEmailVerified,
+  };
+
+  return res.status(201).json({
+    message: "User registered successfully",
+    user: userSafe,
+  });
 };
 
-// LOGIN
+// ─── Login ────────────────────────────────────────────────────────────────────
 
 export const login = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-    // Validation is now handled by middleware, but keep as fallback
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required." });
-    }
+  const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-      return res.status(401).json({ message: "Invalid Credentials" });
-    }
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid Credentials" });
-    }
-
-    const userAgent = req.headers["user-agent"] || "";
-    const ip =
-      (req.headers["x-forwarded-for"] as string) ||
-      req.socket.remoteAddress ||
-      req.ip ||
-      "";
-
-    const session = await Session.create({
-      user: user._id,
-      refreshToken: "temp",
-      userAgent,
-      ip,
-      expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_MS),
-    });
-
-    const accessToken = signAccessToken({
-      userId: user._id.toString(),
-      email: user.email,
-    });
-
-    const refreshToken = signRefreshToken({
-      userId: user._id.toString(),
-      sessionId: session._id.toString(),
-    });
-
-   
-    session.refreshToken = refreshToken;
-    await session.save();
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : ("lax" as const),
-      path: "/",
-      maxAge: REFRESH_TOKEN_EXPIRES_MS,
-    });
-
-    const userSafe = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isEmailVerified: user.isEmailVerified,
-    };
-
-    return res.status(200).json({
-      message: "Login Successful",
-      accessToken,
-      user: userSafe,
-    });
-  } catch (error) {
-    console.error("Login error", error);
-    return res.status(500).json({ message: "Internal server error" });
+  // Validation middleware runs first, but kept as a safety fallback
+  if (!email || !password) {
+    throw new AppError("Email and password are required.", 400);
   }
+
+  const user = await User.findOne({ email }).select("+password");
+  if (!user) {
+    // Generic message — prevents user enumeration
+    throw new AppError("Invalid credentials.", 401);
+  }
+
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    throw new AppError("Invalid credentials.", 401);
+  }
+
+  const userAgent = req.headers["user-agent"] || "";
+  const ip =
+    (req.headers["x-forwarded-for"] as string) ||
+    req.socket.remoteAddress ||
+    req.ip ||
+    "";
+
+  const session = await Session.create({
+    user: user._id,
+    refreshToken: "temp",
+    userAgent,
+    ip,
+    expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_MS),
+  });
+
+  const accessToken = signAccessToken({
+    userId: user._id.toString(),
+    email: user.email,
+  });
+
+  const refreshToken = signRefreshToken({
+    userId: user._id.toString(),
+    sessionId: session._id.toString(),
+  });
+
+  session.refreshToken = refreshToken;
+  await session.save();
+
+  res.cookie("refreshToken", refreshToken, {
+    ...refreshCookieOptions,
+    maxAge: REFRESH_TOKEN_EXPIRES_MS,
+  });
+
+  const userSafe = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isEmailVerified: user.isEmailVerified,
+  };
+
+  return res.status(200).json({
+    message: "Login successful",
+    accessToken,
+    user: userSafe,
+  });
 };
 
-// REFRESH TOKEN
+// ─── Refresh Access Token ─────────────────────────────────────────────────────
+
 export const refreshAccessToken = async (req: Request, res: Response) => {
-  try {
-    const token = req.cookies?.refreshToken;
+  const token = req.cookies?.refreshToken;
 
-    
-    if (!token) {
-
-      return res.status(401).json({ message: "No refresh token is provided" });
-    }
-
-    
-    const payload = verifyRefreshToken(token);
-    if (!payload) {
-      
-      return res.status(401).json({ message: "Invalid refresh token" });
-    }
-
-    
-    const session = await Session.findById(payload.sessionId);
-    if (!session || !session.isValid) {
-     
-      return res
-        .status(401)
-        .json({ message: "Session invalid or does not exist" });
-    }
-
-    
-    if (session.expiresAt.getTime() < Date.now()) {
-  
-      return res.status(401).json({ message: "Session expired" });
-    }
-
-    if (session.refreshToken !== token) {
-
-      return res.status(401).json({ message: "Invalid token mismatch" });
-    }
-
-    
-    const user = await User.findById(payload.userId);
-    if (!user) {
-     
-      return res.status(401).json({ message: "User not found" });
-    }
-
-   
-
-    const accessToken = signAccessToken({
-      userId: user._id.toString(),
-      email: user.email,
-    });
-
-    const userSafe = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isEmailVerified: user.isEmailVerified,
-    };
-
-   
-
-    return res.status(200).json({
-      accessToken,
-      user: userSafe,
-    });
-  } catch (error) {
-    console.error("Refresh token error", error);
-    return res.status(500).json({ message: "Internal server error" });
+  if (!token) {
+    throw new AppError("No refresh token provided.", 401);
   }
+
+  const payload = verifyRefreshToken(token);
+  if (!payload) {
+    throw new AppError("Invalid or expired refresh token.", 401);
+  }
+
+  const session = await Session.findById(payload.sessionId);
+  if (!session || !session.isValid) {
+    throw new AppError("Session is invalid or does not exist.", 401);
+  }
+
+  if (session.expiresAt.getTime() < Date.now()) {
+    throw new AppError("Session has expired.", 401);
+  }
+
+  if (session.refreshToken !== token) {
+    // Token reuse detected — potential theft
+    await Session.findByIdAndUpdate(payload.sessionId, { isValid: false });
+    throw new AppError("Token mismatch detected. Please log in again.", 401);
+  }
+
+  const user = await User.findById(payload.userId);
+  if (!user) {
+    throw new AppError("User not found.", 404);
+  }
+
+  const accessToken = signAccessToken({
+    userId: user._id.toString(),
+    email: user.email,
+  });
+
+  const userSafe = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isEmailVerified: user.isEmailVerified,
+  };
+
+  return res.status(200).json({ accessToken, user: userSafe });
 };
 
-// LOGOUT
+// ─── Logout ───────────────────────────────────────────────────────────────────
 
 export const logout = async (req: Request, res: Response) => {
-  try {
-    const token = req.cookies?.refreshToken;
+  const token = req.cookies?.refreshToken;
 
-    if (token) {
-      const payload = verifyRefreshToken(token);
-
-      if (payload) {
-        await Session.findByIdAndUpdate(payload.sessionId, {
-          isValid: false,
-        });
-      }
+  if (token) {
+    const payload = verifyRefreshToken(token);
+    if (payload) {
+      await Session.findByIdAndUpdate(payload.sessionId, { isValid: false });
     }
-
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : ("lax" as const),
-      path: "/",
-      maxAge: 0,
-    });
-
-    return res.status(200).json({ message: "Logged out Successfully" });
-  } catch (error) {
-    console.error("Logout error", error);
-    return res.status(500).json({ message: "Internal server error" });
   }
+
+  res.clearCookie("refreshToken", { ...refreshCookieOptions, maxAge: 0 });
+
+  return res.status(200).json({ message: "Logged out successfully." });
 };
 
-// CURRENT USER
+// ─── Get Current User ─────────────────────────────────────────────────────────
 
 export const getMe = async (req: AuthRequest, res: Response) => {
-  try {
-    if (!req.user?.userId) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const user = await User.findById(req.user.userId);
-    if (!user) {
-      return res.status(401).json({ message: "User not found" });
-    }
-
-    const userSafe = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isEmailVerified: user.isEmailVerified,
-    };
-
-    return res.status(200).json({ user: userSafe });
-  } catch (error) {
-    console.error("getMe error", error);
-    return res.status(500).json({ message: "Internal server error" });
+  if (!req.user?.userId) {
+    throw new AppError("Unauthorized", 401);
   }
+
+  const user = await User.findById(req.user.userId);
+  if (!user) {
+    throw new AppError("User not found.", 404);
+  }
+
+  const userSafe = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isEmailVerified: user.isEmailVerified,
+  };
+
+  return res.status(200).json({ user: userSafe });
+};
+
+// ─── Change Password ──────────────────────────────────────────────────────────
+
+export const changePassword = async (req: AuthRequest, res: Response) => {
+  if (!req.user?.userId) {
+    throw new AppError("Unauthorized", 401);
+  }
+
+  const { currPassword, newPassword } = req.body;
+
+  if (!currPassword || !newPassword) {
+    throw new AppError("Current password and new password are required.", 400);
+  }
+
+  const user = await User.findById(req.user.userId).select("+password");
+  if (!user) {
+    throw new AppError("User not found.", 404);
+  }
+
+  const isMatch = await user.comparePassword(currPassword);
+  if (!isMatch) {
+    throw new AppError("Current password is incorrect.", 400);
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  return res.status(200).json({ message: "Password changed successfully." });
 };
