@@ -1,6 +1,6 @@
 import { HydratedDocument, model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import { IUser } from "../lib/types";
+import { IUser, UserRole } from "../lib/types";
 
 const userSchema = new Schema<IUser>(
   {
@@ -15,15 +15,15 @@ const userSchema = new Schema<IUser>(
     password: { type: String, required: true, select: false },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: Object.values(UserRole),
+      default: UserRole.MEMBER,
     },
     isEmailVerified: {
       type: Boolean,
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre<HydratedDocument<IUser>>("save", async function () {
@@ -40,7 +40,7 @@ userSchema.pre<HydratedDocument<IUser>>("save", async function () {
 });
 
 userSchema.methods.comparePassword = async function (
-  candidatePassword: string
+  candidatePassword: string,
 ): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
