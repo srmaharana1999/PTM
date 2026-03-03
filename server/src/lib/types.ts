@@ -11,17 +11,20 @@ export interface IRefreshTokenPayload {
   sessionId: string;
 }
 
+// User Interface
+
+
 export interface IUser extends Document {
-  _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
-  role: "user" | "admin";
   isEmailVerified: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+// Session Interface
 export interface ISession extends Document {
   user: Types.ObjectId;
   refreshToken: string;
@@ -38,4 +41,71 @@ export interface AuthRequest extends Request {
     userId: string;
     email: string;
   };
+}
+
+// Interface for Task
+
+export enum TaskStatus {
+  TODO = "todo",
+  IN_PROGRESS = "in-progress",
+  DONE = "done",
+}
+
+export enum TaskPriority {
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+}
+
+export interface ITask extends Document {
+  title: string;
+  description: string;
+  projectId: mongoose.Types.ObjectId;
+  assigneeId?: mongoose.Types.ObjectId;
+  createdBy: mongoose.Types.ObjectId;
+  priority: TaskPriority;
+  status: TaskStatus;
+  dueDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// Interface for Project
+
+export enum ProjectStatus {
+  ACTIVE = "active",
+  COMPLETED = "completed",
+}
+
+export interface IProject extends Document {
+  title: string;
+  description: string;
+  status: ProjectStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
+  owner: mongoose.Types.ObjectId;
+}
+
+// Interface For Comments
+
+export interface IComment extends Document {
+  task: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
+  message: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Project Member
+
+export enum ProjectRole {
+  OWNER = "owner",
+  ADMIN = "admin",
+  MEMBER = "member",
+}
+
+export interface IProjectMember extends Document {
+  user: mongoose.Types.ObjectId;
+  project: mongoose.Types.ObjectId;
+  role: ProjectRole;
 }
