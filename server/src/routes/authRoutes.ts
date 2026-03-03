@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { requireAuth } from "../middlewares/authMiddleware";
 import {
+  changePassword,
   getMe,
   login,
   logout,
@@ -12,10 +13,7 @@ import {
   registerLimiter,
   authLimiter,
 } from "../middlewares/rateLimiter";
-import {
-  validateRegistration,
-  validateLogin,
-} from "../middlewares/validation";
+import { validateRegistration, validateLogin } from "../middlewares/validation";
 
 const router = Router();
 
@@ -33,5 +31,9 @@ router.post("/logout", authLimiter, logout);
 
 // /api/auth/me
 router.get("/me", requireAuth, getMe);
+
+// Change Password
+
+router.patch("/change-password", requireAuth, changePassword);
 
 export default router;
