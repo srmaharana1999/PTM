@@ -6,6 +6,13 @@ import helmet from "helmet";
 import "./models/session.model";
 import "./models/user.model";
 import authRoutes from "./routes/authRoutes";
+import taskRoutes from "./routes/taskRoutes";
+import projectRoutes from "./routes/projectRoutes";
+import projectMemberRoutes from "./routes/projectMemberRoutes";
+import {
+  notFoundHandler,
+  globalErrorHandler,
+} from "./middlewares/errorHandler";
 
 dotenv.config();
 
@@ -37,5 +44,17 @@ app.get("/api/health", (_req, res) => {
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+// Task routes
+app.use("/api/tasks", taskRoutes);
+// Project routes
+app.use("/api/projects", projectRoutes);
+// Project Member router
+app.use("/api/project-member", projectMemberRoutes);
+
+// 404 — must come AFTER all route registrations
+app.use(notFoundHandler);
+
+// Global error handler — must be the LAST middleware (4-param signature)
+app.use(globalErrorHandler);
 
 export default app;
