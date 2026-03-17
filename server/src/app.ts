@@ -49,7 +49,7 @@ app.use("/api/tasks", taskRoutes);
 // Project routes
 app.use("/api/projects", projectRoutes);
 // Project Member router
-app.use("/api/project-member", projectMemberRoutes);
+app.use("/api/membership", projectMemberRoutes);
 
 // 404 — must come AFTER all route registrations
 app.use(notFoundHandler);
