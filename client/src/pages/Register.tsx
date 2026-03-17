@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { useAppDispatch } from "../app/hooks";
 import { registerUser } from "../features/auth/authThunks";
 import { Form, Formik } from "formik";
-import { initialValues, registerSchema, type registerTypes } from "@/lib/Schema/register";
+import { initialValues, registerSchema, type registerTypes } from "@/lib/schema/register";
 import InputField from "@/components/Fields/InputField";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";

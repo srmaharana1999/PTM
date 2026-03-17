@@ -5,7 +5,7 @@ import { useAppDispatch } from "../app/hooks";
 import { loginUser } from "../features/auth/authThunks";
 import { Form, Formik } from "formik";
 import InputField from "@/components/Fields/InputField";
-import { initialValues, loginSchema, type loginTypes } from "@/lib/Schema/login";
+import { initialValues, loginSchema, type loginTypes } from "@/lib/schema/login";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 
