@@ -31,13 +31,17 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
-    
+
     // Don't try to refresh token for login/register endpoints
-    const isAuthEndpoint = 
-      originalRequest.url?.includes('/auth/login') || 
-      originalRequest.url?.includes('/auth/register');
-    
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+    const isAuthEndpoint =
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/register");
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthEndpoint
+    ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           queue.push({ resolve, reject });
@@ -56,18 +60,18 @@ api.interceptors.response.use(
         const res = await axios.post(
           "http://localhost:3000/api/auth/refresh",
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
         const newToken = res.data.accessToken;
-        
+
         // console.log('✅ CLIENT: Received new access token (first 30 chars):', newToken.substring(0, 100) + '...');
         // console.log('🔄 CLIENT: Retrying', queue.length + 1, 'queued request(s)');
-        
+
         store.dispatch(setAccessToken(newToken));
         resolveQueue(null, newToken);
         return api(originalRequest);
       } catch (err) {
-        console.log('❌ CLIENT: Token refresh failed, logging out');
+        console.log("❌ CLIENT: Token refresh failed, logging out");
         resolveQueue(err, null);
         store.dispatch(logout());
         return Promise.reject(err);
@@ -76,7 +80,7 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
