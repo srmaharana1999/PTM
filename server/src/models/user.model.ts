@@ -1,6 +1,6 @@
 import { HydratedDocument, model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import { IUser, UserRole } from "../lib/types";
+import { IUser } from "../lib/types";
 
 const userSchema = new Schema<IUser>(
   {
@@ -13,11 +13,6 @@ const userSchema = new Schema<IUser>(
       lowercase: true,
     },
     password: { type: String, required: true, select: false },
-    role: {
-      type: String,
-      enum: Object.values(UserRole),
-      default: UserRole.MEMBER,
-    },
     isEmailVerified: {
       type: Boolean,
       default: false,
