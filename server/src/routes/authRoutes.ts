@@ -2,6 +2,7 @@ import { Router } from "express";
 import { requireAuth } from "../middlewares/authMiddleware";
 import {
   changePassword,
+  getAllUsers,
   getMe,
   login,
   logout,
@@ -31,6 +32,9 @@ router.post("/logout", authLimiter, logout);
 
 // /api/auth/me
 router.get("/me", requireAuth, getMe);
+
+// /api/auth/users
+router.get("/users", requireAuth, getAllUsers);
 
 // Change Password
 

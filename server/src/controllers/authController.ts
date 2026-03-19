@@ -235,3 +235,18 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
 
   return res.status(200).json({ message: "Password changed successfully." });
 };
+
+export const getAllUsers = async (req: AuthRequest, res: Response) => {
+  if (!req.user?.userId) {
+    throw new AppError("Unauthorized", 401);
+  }
+
+  const result = await User.find();
+  if (!result) {
+    throw new AppError("Users not found.", 404);
+  }
+
+  return res
+    .status(200)
+    .json({ message: "Password changed successfully.", data: result });
+};
