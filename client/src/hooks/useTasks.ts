@@ -1,5 +1,3 @@
-
-
 import {
   bulkUpdateTasksApi,
   createTaskApi,
@@ -22,12 +20,8 @@ export const useGetTasks = (projectId: string) =>
 export const useCreateTask = () =>
   useMutation({
     mutationFn: (data: TaskValues) => createTaskApi(data),
-    onSuccess: (_,data) => {
-      console.log("Task Created SuccessFully");
-      queryClient.invalidateQueries({ queryKey: ["tasks",data.project] });
-    },
-    onError: (error) => {
-      console.error("Create failed:", error);
+    onSuccess: (_, data) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", data.projectId] });
     },
   });
 
@@ -36,11 +30,7 @@ export const useUpdateTask = () =>
     mutationFn: ({ id, data }: { id: string; data: TaskValues }) =>
       updateTaskApi({ id, data }),
     onSuccess: (_, { data }) => {
-      console.log("Task Updated SuccessFully");
-      queryClient.invalidateQueries({ queryKey: ["tasks", data.project] });
-    },
-    onError: (error) => {
-      console.error("Update failed:", error);
+      queryClient.invalidateQueries({ queryKey: ["tasks", data.projectId] });
     },
   });
 
@@ -48,11 +38,7 @@ export const useDeleteTask = () =>
   useMutation({
     mutationFn: ({ id }: { id: string; projectId: string }) => deleteTaskApi(id),
     onSuccess: (_, { projectId }) => {
-      console.log("Task Deleted SuccessFully");
       queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
-    },
-    onError: (error) => {
-      console.error("Task deletion failed:", error);
     },
   });
 

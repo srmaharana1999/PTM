@@ -1,5 +1,3 @@
-
-
 import {
   addMembersApi,
   deleteMembersApi,
@@ -24,14 +22,10 @@ export const useAddMembers = (projectId: string) =>
       members: Array<{
         userId: string;
         role: ProjectRole;
-      }>,
+      }>
     ) => addMembersApi({ projectId, members }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["members", projectId] });
-      console.log("Members added successfully");
-    },
-    onError: (error) => {
-      console.error("Add members failed:", error);
     },
   });
 
@@ -46,10 +40,6 @@ export const useUpdateMemberRole = (projectId: string) =>
     }) => updateMemberRoleApi({ projectId, memberId, role }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["members", projectId] });
-      console.log("Members updated successfully");
-    },
-    onError: (error) => {
-      console.error("Update members failed:", error);
     },
   });
 
@@ -58,9 +48,5 @@ export const useDeleteMembers = (projectId: string) =>
     mutationFn: (members: string[]) => deleteMembersApi({ projectId, members }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["members", projectId] });
-      console.log("Members deleted successfully");
-    },
-    onError: (error) => {
-      console.error("Delete members failed:", error);
     },
   });

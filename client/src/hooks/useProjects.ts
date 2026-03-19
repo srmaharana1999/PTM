@@ -29,11 +29,7 @@ export const useCreateProject = () =>
   useMutation({
     mutationFn: (data: ProjectValues) => createProjectApi(data),
     onSuccess: () => {
-      console.log("Project Created SuccessFully");
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-    },
-    onError: (error) => {
-      console.error("Create failed:", error);
     },
   });
 
@@ -42,12 +38,8 @@ export const useUpdateProject = () =>
     mutationFn: ({ id, data }: { id: string; data: IUpdateProjectValue }) =>
       updateProjectApi({ data, id }),
     onSuccess: (_, { id }) => {
-      console.log("Project Updated SuccessFully");
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["projects", id] });
-    },
-    onError: (error) => {
-      console.error("Update failed:", error);
     },
   });
 
@@ -55,10 +47,6 @@ export const useDeleteProject = () =>
   useMutation({
     mutationFn: (id: string) => deleteProjectApi(id),
     onSuccess: () => {
-      console.log("Project Deleted SuccessFully");
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-    },
-    onError: (error) => {
-      console.error("Project deletion failed:", error);
     },
   });
