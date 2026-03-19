@@ -22,7 +22,7 @@ const InputField = ({
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={id}>
+        <label htmlFor={id} className="block text-sm mb-1">
           {label}
           {isRequired && <span className="text-destructive ml-1">*</span>}
         </label>
@@ -33,7 +33,7 @@ const InputField = ({
         placeholder={placeholder}
         {...field}
         className={clsx(
-          "w-full rounded-md mt-1 border border-white/10 bg-white/5 px-4 py-2.5 text-sm placeholder:text-muted-foreground outline-none transition-all focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/20",
+          "w-full rounded-md border border-white/10 bg-white/5 px-4 py-2.5 text-sm placeholder:text-muted-foreground outline-none transition-all focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/20",
           meta.touched && meta.error ? "border-red-500" : "",
         )}
       />

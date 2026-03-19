@@ -26,7 +26,6 @@ interface IOptions {
   email: string;
 }
 
-
 interface ICommandProps {
   label?: string;
   name: string;
@@ -60,14 +59,17 @@ export default function SelectWithInput({
 
   const remove = (userId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    helpers.setValue(selectedIds.filter((id) => id !== userId), true);
+    helpers.setValue(
+      selectedIds.filter((id) => id !== userId),
+      true,
+    );
     helpers.setTouched(true, false);
   };
 
   return (
     <div>
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium mb-1">
+        <label htmlFor={id} className="block text-sm mb-1">
           {label}
           {isRequired && <span className="text-destructive ml-1">*</span>}
         </label>
@@ -133,7 +135,7 @@ export default function SelectWithInput({
             <CommandInput placeholder={placeholder} />
             <CommandList className="p-1 my-scrollbar">
               <CommandEmpty>No members found</CommandEmpty>
-              <CommandGroup >
+              <CommandGroup>
                 {safeOptions.map((option) => {
                   const isSelected = selectedIds.includes(option._id);
                   return (
