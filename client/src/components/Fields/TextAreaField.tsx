@@ -1,22 +1,21 @@
-import { Input } from "@/components/ui/input";
 import clsx from "clsx";
 import { useField } from "formik";
 
 interface IProps {
   label?: string;
   name: string;
-  type: string;
   placeholder?: string;
   id: string;
   isRequired: boolean;
+  rows?: number;
 }
-const InputField = ({
+const TextAreaField = ({
   label,
   name,
-  type = "text",
   placeholder,
   id,
   isRequired,
+  rows,
 }: IProps) => {
   const [field, meta] = useField(name);
   return (
@@ -24,12 +23,12 @@ const InputField = ({
       {label && (
         <label htmlFor={id}>
           {label}
-          {isRequired && <span className="text-destructive ml-1">*</span>}
+          {isRequired && <span className="text-destructive">*</span>}
         </label>
       )}
-      <Input
+      <textarea
         id={id}
-        type={type}
+        rows={rows}
         placeholder={placeholder}
         {...field}
         className={clsx(
@@ -38,10 +37,10 @@ const InputField = ({
         )}
       />
       {meta.touched && meta.error && (
-        <p className="mt-1 text-xs text-red-500">{meta.error}</p>
+        <p className=" text-xs text-red-500">{meta.error}</p>
       )}
     </div>
   );
 };
 
-export default InputField;
+export default TextAreaField;
