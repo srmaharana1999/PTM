@@ -15,22 +15,15 @@ export const createProject = async (req: AuthRequest, res: Response) => {
     const userId = req.user?.userId;
     if (!userId) throw new AppError("Unauthorized", 401);
 
-    const { title, description, status, members } = req.body;
+    const { title, description, members } = req.body;
 
     if (!title || !description) {
       throw new AppError("Title and description are required.", 400);
     }
 
-    if (status && !Object.values(ProjectStatus).includes(status)) {
-      throw new AppError(
-        "Invalid status value. Allowed: active, completed.",
-        400,
-      );
-    }
-
     // [1] Create the project
     const projects = await Project.create(
-      [{ title, description, status, owner: userId }],
+      [{ title, description, status: "active", owner: userId }],
       { session },
     );
     const createdProject = projects[0];
@@ -92,7 +85,7 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
 
   return res
     .status(200)
-    .json({ message: "Projects fetched successfully.", projects });
+    .json({ message: "Projects fetched successfully.", data: projects });
 };
 
 // ─── Get Project By ID ────────────────────────────────────────────────────────
@@ -113,7 +106,7 @@ export const getProjectById = async (req: AuthRequest, res: Response) => {
 
   return res
     .status(200)
-    .json({ message: "Project fetched successfully.", projectDetails });
+    .json({ message: "Project fetched successfully.", data: projectDetails });
 };
 
 // ─── Delete Project By ID ─────────────────────────────────────────────────────
@@ -162,39 +155,107 @@ export const deleteProjectById = async (req: AuthRequest, res: Response) => {
 // ─── Update Project ───────────────────────────────────────────────────────────
 
 export const updateProject = async (req: AuthRequest, res: Response) => {
-  const userId = req.user?.userId;
-  if (!userId) throw new AppError("Unauthorized", 401);
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  const projectId = req.params.pid;
-  const { title, description, status } = req.body;
+  try {
+    const userId = req.user?.userId;
+    if (!userId) throw new AppError("Unauthorized", 401);
 
-  if (status && !Object.values(ProjectStatus).includes(status)) {
-    throw new AppError(
-      "Invalid status value. Allowed: active, completed.",
-      400,
-    );
+    const projectId = req.params.pid;
+    const { title, description, status, members } = req.body;
+    console.log(req.body);
+
+    if (status && !Object.values(ProjectStatus).includes(status)) {
+      throw new AppError(
+        "Invalid status value. Allowed: active, completed.",
+        400,
+      );
+    }
+
+    // ─── Member diff-sync ────────────────────────────────────────────────────
+    if (Array.isArray(members)) {
+      // Fetch all current members for this project
+      const existingMembers = await ProjectMember.find({
+        project: projectId,
+      }).session(session);
+
+      const existingMemberIds = existingMembers.map((m) =>
+        m.user.toString(),
+      );
+
+      // Owner is always protected — never add/remove them via this path
+      const ownerEntry = existingMembers.find(
+        (m) => m.role === ProjectRole.OWNER,
+      );
+      const ownerIdStr = ownerEntry?.user.toString();
+
+      // IDs to ADD: in incoming list, not yet in DB, and not the owner
+      const toAdd = members.filter(
+        (id: string) => !existingMemberIds.includes(id) && id !== ownerIdStr,
+      );
+
+      // IDs to REMOVE: currently in DB but not in incoming list (skip owner)
+      const toRemove = existingMemberIds.filter(
+        (id) => !members.includes(id) && id !== ownerIdStr,
+      );
+
+      if (toAdd.length > 0) {
+        const newEntries = toAdd.map((memberId: string) => ({
+          project: projectId,
+          user: new mongoose.Types.ObjectId(memberId),
+          role: ProjectRole.MEMBER,
+        }));
+        await ProjectMember.insertMany(newEntries, { session });
+      }
+
+      if (toRemove.length > 0) {
+        await ProjectMember.deleteMany(
+          { project: projectId, user: { $in: toRemove } },
+          { session },
+        );
+        // Also unassign their tasks in this project so they aren't orphaned
+        await Task.updateMany(
+          { projectId, assignee: { $in: toRemove } },
+          { $unset: { assignee: "" } },
+          { session },
+        );
+      }
+    }
+
+    // ─── Update project fields ────────────────────────────────────────────────
+    const updateQuery: Record<string, unknown> = {};
+    if (title) updateQuery.title = title;
+    if (description) updateQuery.description = description;
+    if (status) updateQuery.status = status;
+    
+    // members-only update is valid — don't require field changes
+    const updatedProject =
+      Object.keys(updateQuery).length > 0
+        ? await Project.findOneAndUpdate(
+            { _id: projectId, owner: userId },
+            updateQuery,
+            { new: true, session },
+          )
+        : await Project.findOne({ _id: projectId, owner: userId }).session(
+            session,
+          );
+
+    if (!updatedProject) {
+      throw new AppError("Project not found or you are not the owner.", 404);
+    }
+
+    console.log(updatedProject)
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return res
+      .status(200)
+      .json({ message: "Project updated successfully.", data: updatedProject });
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
   }
-
-  const updateQuery: Record<string, unknown> = {};
-  if (title) updateQuery.title = title;
-  if (description) updateQuery.description = description;
-  if (status) updateQuery.status = status;
-
-  if (Object.keys(updateQuery).length === 0) {
-    throw new AppError("No valid fields provided to update.", 400);
-  }
-
-  const updatedProject = await Project.findOneAndUpdate(
-    { _id: projectId, owner: userId },
-    updateQuery,
-    { new: true },
-  );
-
-  if (!updatedProject) {
-    throw new AppError("Project not found or you are not the owner.", 404);
-  }
-
-  return res
-    .status(200)
-    .json({ message: "Project updated successfully.", updatedProject });
 };
