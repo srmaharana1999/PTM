@@ -57,7 +57,10 @@ export const createMember = async (req: AuthRequest, res: Response) => {
   );
 
   if (newMembers.length === 0) {
-    throw new AppError("All provided users are already members of this project", 409);
+    throw new AppError(
+      "All provided users are already members of this project",
+      409,
+    );
   }
 
   const bulkData = newMembers.map((m) => ({
@@ -70,7 +73,7 @@ export const createMember = async (req: AuthRequest, res: Response) => {
 
   res.status(201).json({
     message: "Project members added successfully",
-    result,
+    data: result,
   });
 };
 
@@ -95,7 +98,10 @@ export const updateMemberRole = async (req: AuthRequest, res: Response) => {
 
   const allowedRoles = [ProjectRole.ADMIN, ProjectRole.MEMBER];
   if (!allowedRoles.includes(newRole)) {
-    throw new AppError(`Invalid role. Allowed: ${allowedRoles.join(", ")}.`, 400);
+    throw new AppError(
+      `Invalid role. Allowed: ${allowedRoles.join(", ")}.`,
+      400,
+    );
   }
 
   // Verify caller is the project OWNER
@@ -208,7 +214,6 @@ export const getProjectMembers = async (req: AuthRequest, res: Response) => {
 
   return res.status(200).json({
     message: "Project members fetched successfully",
-    allMemberDetails,
+    data: allMemberDetails,
   });
 };
-

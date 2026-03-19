@@ -30,19 +30,43 @@ export const createTask = async (req: AuthRequest, res: Response) => {
   const userId = req.user?.userId;
   if (!userId) throw new AppError("Unauthorized", 401);
 
-  const { title, description, priority, status, dueDate, assigneeId, projectId } =
-    req.body;
+  const {
+    title,
+    description,
+    priority,
+    status,
+    dueDate,
+    assigneeId,
+    projectId,
+  } = req.body;
 
-  if (!title || !description || !priority || !status || !projectId || !assigneeId || !dueDate) {
-    throw new AppError("All fields are required: title, description, priority, status, projectId, assigneeId, dueDate.", 400);
+  if (
+    !title ||
+    !description ||
+    !priority ||
+    !status ||
+    !projectId ||
+    !assigneeId ||
+    !dueDate
+  ) {
+    throw new AppError(
+      "All fields are required: title, description, priority, status, projectId, assigneeId, dueDate.",
+      400,
+    );
   }
 
   if (!Object.values(TaskPriority).includes(priority)) {
-    throw new AppError(`Invalid priority. Allowed: ${Object.values(TaskPriority).join(", ")}.`, 400);
+    throw new AppError(
+      `Invalid priority. Allowed: ${Object.values(TaskPriority).join(", ")}.`,
+      400,
+    );
   }
 
   if (!Object.values(TaskStatus).includes(status)) {
-    throw new AppError(`Invalid status. Allowed: ${Object.values(TaskStatus).join(", ")}.`, 400);
+    throw new AppError(
+      `Invalid status. Allowed: ${Object.values(TaskStatus).join(", ")}.`,
+      400,
+    );
   }
 
   const membership = await requireMembership(userId, projectId);
@@ -62,7 +86,9 @@ export const createTask = async (req: AuthRequest, res: Response) => {
     createdBy: userId,
   });
 
-  return res.status(201).json({ message: "Task created successfully.", task });
+  return res
+    .status(201)
+    .json({ message: "Task created successfully.", data: task });
 };
 
 // ─── Get Tasks ────────────────────────────────────────────────────────────────
@@ -71,7 +97,10 @@ export const getTasks = async (req: Request, res: Response) => {
   const { projectId } = req.query;
 
   if (!projectId || typeof projectId !== "string") {
-    throw new AppError("projectId query parameter is required and must be a string.", 400);
+    throw new AppError(
+      "projectId query parameter is required and must be a string.",
+      400,
+    );
   }
 
   const tasks = await Task.find({ projectId })
@@ -81,7 +110,7 @@ export const getTasks = async (req: Request, res: Response) => {
 
   return res
     .status(200)
-    .json({ message: "Tasks fetched successfully.", tasks });
+    .json({ message: "Tasks fetched successfully.", data: tasks });
 };
 
 // ─── Update Task ──────────────────────────────────────────────────────────────
@@ -93,7 +122,8 @@ export const updateTask = async (req: AuthRequest, res: Response) => {
   const taskId = req.params.id;
   const { projectId, ...updateBody } = req.body;
 
-  if (!projectId) throw new AppError("projectId is required in the request body.", 400);
+  if (!projectId)
+    throw new AppError("projectId is required in the request body.", 400);
 
   const membership = await requireMembership(userId, projectId);
 
@@ -112,7 +142,7 @@ export const updateTask = async (req: AuthRequest, res: Response) => {
 
   return res
     .status(200)
-    .json({ message: "Task updated successfully.", updatedTask });
+    .json({ message: "Task updated successfully.", data: updatedTask });
 };
 
 // ─── Delete Task ──────────────────────────────────────────────────────────────
@@ -124,7 +154,8 @@ export const deleteTask = async (req: AuthRequest, res: Response) => {
   const taskId = req.params.id;
   const { projectId } = req.body;
 
-  if (!projectId) throw new AppError("projectId is required in the request body.", 400);
+  if (!projectId)
+    throw new AppError("projectId is required in the request body.", 400);
 
   const membership = await requireMembership(userId, projectId);
 
@@ -154,7 +185,10 @@ export const updateTasks = async (req: AuthRequest, res: Response) => {
   const membership = await requireMembership(userId, projectId);
 
   if (membership.role === ProjectRole.MEMBER) {
-    throw new AppError("Only project owners and admins can perform bulk operations.", 403);
+    throw new AppError(
+      "Only project owners and admins can perform bulk operations.",
+      403,
+    );
   }
 
   if (!Array.isArray(updates) || !Array.isArray(deletes)) {
@@ -162,7 +196,10 @@ export const updateTasks = async (req: AuthRequest, res: Response) => {
   }
 
   if (updates.length === 0 && deletes.length === 0) {
-    throw new AppError("No operations provided. Send at least one update or delete.", 400);
+    throw new AppError(
+      "No operations provided. Send at least one update or delete.",
+      400,
+    );
   }
 
   const updateOps = updates.map((item) => ({
@@ -182,5 +219,5 @@ export const updateTasks = async (req: AuthRequest, res: Response) => {
 
   return res
     .status(200)
-    .json({ message: "Bulk operation completed successfully.", result });
+    .json({ message: "Bulk operation completed successfully.", data: result });
 };
