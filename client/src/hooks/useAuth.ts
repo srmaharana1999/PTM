@@ -1,11 +1,19 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { changePasswordApi, getMeApi } from "@/api/authApi";
+import { changePasswordApi, getMeApi, getUsersApi } from "@/api/authApi";
 import type { ChangePasswordValues } from "@/lib/schema/authSchema";
 
 export const useGetMe = () =>
   useQuery({
     queryKey: ["me"],
     queryFn: getMeApi,
+    staleTime: 1000 * 60 * 5,
+  });
+
+
+export const useUsers = () =>
+  useQuery({
+    queryKey: ["users"],
+    queryFn: getUsersApi,
     staleTime: 1000 * 60 * 5,
   });
 
