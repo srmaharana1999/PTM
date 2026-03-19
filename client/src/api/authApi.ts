@@ -43,6 +43,11 @@ export const getMeApi = async (): Promise<ApiResponse<User>> => {
   return response.data;
 };
 
+export const getUsersApi = async (): Promise<ApiResponse<User[]>> => {
+  const response = await api.get("/auth/users");
+  return response.data;
+};
+
 export const refreshTokenApi = async (): Promise<
   ApiResponse<{ accessToken: string }>
 > => {
