@@ -1,14 +1,26 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
-import type { JSX } from "react";
+import FullPageLoader from "@/components/shared/FullPageLoader";
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+/**
+ * ProtectedRoute — layout-style guard for all authenticated routes.
+ *
+ * Usage in router:
+ *   <Route element={<ProtectedRoute />}>
+ *     <Route path="/dashboard" element={<DashboardPage />} />
+ *   </Route>
+ *
+ * - Shows FullPageLoader while initAuth() is running
+ * - Redirects to /login if not authenticated
+ * - Renders <Outlet /> (child routes) when authenticated
+ */
+const ProtectedRoute = () => {
   const { user, loading } = useAppSelector((s) => s.auth);
 
-  if (loading) return <p className="text-4xl">Loading</p>;
+  if (loading) return <FullPageLoader />;
   if (!user) return <Navigate to="/login" replace />;
 
-  return children;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;
