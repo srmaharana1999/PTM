@@ -8,6 +8,7 @@ import {
   logout,
   refreshAccessToken,
   register,
+  searchUsers,
 } from "../controllers/authController";
 import {
   loginLimiter,
@@ -36,8 +37,10 @@ router.get("/me", requireAuth, getMe);
 // /api/auth/users
 router.get("/users", requireAuth, getAllUsers);
 
-// Change Password
+// /api/auth/search?query=... 
+router.get("/search", requireAuth, searchUsers);
 
+// Change Password
 router.patch("/change-password", requireAuth, changePassword);
 
 export default router;
