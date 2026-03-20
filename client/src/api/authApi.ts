@@ -62,3 +62,10 @@ export const changePasswordApi = async (
   const response = await api.patch("/auth/change-password", data);
   return response.data;
 };
+
+export const searchUsersApi = async (
+  query: string,
+): Promise<ApiResponse<User[]>> => {
+  const response = await api.get(`/auth/search?query=${query}`);
+  return response.data;
+};
