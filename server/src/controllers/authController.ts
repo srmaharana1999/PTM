@@ -248,5 +248,35 @@ export const getAllUsers = async (req: AuthRequest, res: Response) => {
 
   return res
     .status(200)
-    .json({ message: "Password changed successfully.", data: result });
+    .json({ message: "Users found successfully.", data: result });
+};
+
+export const searchUsers = async (req: AuthRequest, res: Response) => {
+  if (!req.user?.userId) {
+    throw new AppError("Unauthorized", 401);
+  }
+
+  const { query } = req.query;
+
+  let filter = {};
+
+  if (query && typeof query === "string" && query.trim() !== "") {
+    const searchTerm = query.trim();
+
+    filter = {
+      $or: [
+        { name: { $regex: `^${searchTerm}`, $options: "i" } },
+        { email: { $regex: `^${searchTerm}`, $options: "i" } },
+      ],
+    };
+  }
+
+  const users = await User.find(filter)
+    .select("_id name email") // only required fields
+    .lean(); // faster response
+
+  return res.status(200).json({
+    message: "Users fetched successfully",
+    data: users,
+  });
 };
