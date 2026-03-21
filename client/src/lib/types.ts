@@ -68,7 +68,7 @@ export interface ITask {
   _id: string;
   title: string;
   description: string;
-  creator: Creator;
+  createdBy: Creator;
   project: Project;
   assigneeId: Assignee;
   priority: TaskPriority;
