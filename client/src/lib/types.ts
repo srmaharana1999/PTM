@@ -70,7 +70,7 @@ export interface ITask {
   description: string;
   creator: Creator;
   project: Project;
-  assignee: Assignee;
+  assigneeId: Assignee;
   priority: TaskPriority;
   status: TaskStatus;
   dueDate: string;
