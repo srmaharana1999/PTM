@@ -1,5 +1,5 @@
-import { Home } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Home } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const NotFoundPage = () => {
   return (
@@ -13,13 +13,13 @@ const NotFoundPage = () => {
       </div>
       <Link
         to="/dashboard"
-        className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg hover:opacity-90 transition-opacity"
+        className="flex items-center gap-2 rounded-xl bg-linear-to-r from-violet-500 to-fuchsia-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg hover:opacity-90 transition-opacity"
       >
         <Home className="h-4 w-4" />
         Go to Dashboard
       </Link>
     </div>
-  )
-}
+  );
+};
 
-export default NotFoundPage
+export default NotFoundPage;
