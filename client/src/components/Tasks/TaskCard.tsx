@@ -23,7 +23,7 @@ const TaskCard = ({ task, userRole, onEdit, onView }: TaskCardProps) => {
   return (
     <div
       onClick={() => onView(task)}
-      className="group relative flex flex-col gap-2 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl transition-all duration-300 hover:border-violet-500/50 hover:bg-white/[0.08] hover:shadow-[0_0_30px_rgba(139,92,246,0.1)] cursor-pointer"
+      className="group relative flex flex-col gap-2 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl transition-all duration-300 hover:border-violet-500/50 hover:bg-white/8 hover:shadow-[0_0_30px_rgba(139,92,246,0.1)] cursor-pointer"
     >
       {/* Top Section: Priority & Actions */}
       <div className="flex items-center justify-between">
