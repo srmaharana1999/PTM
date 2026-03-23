@@ -44,7 +44,7 @@ const DatePicker = ({
       {label && (
         <label
           htmlFor={id}
-          className="block text-sm font-medium text-gray-300 transition-colors"
+          className="block text-sm mb-1.5 text-gray-400 transition-colors"
         >
           {label}
           {isRequired && <span className="ml-1 text-destructive">*</span>}

@@ -69,7 +69,7 @@ export default function SelectWithInput({
   return (
     <div>
       {label && (
-        <label htmlFor={id} className="block text-sm mb-1">
+        <label htmlFor={id} className="block text-sm mb-1.5 text-gray-400">
           {label}
           {isRequired && <span className="text-destructive ml-1">*</span>}
         </label>

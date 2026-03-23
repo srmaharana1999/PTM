@@ -21,7 +21,7 @@ const TextAreaField = ({
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={id} className="block text-sm mb-1">
+        <label htmlFor={id} className="block text-sm mb-1.5 text-gray-400">
           {label}
           {isRequired && <span className="text-destructive">*</span>}
         </label>
