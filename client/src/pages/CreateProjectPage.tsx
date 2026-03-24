@@ -13,11 +13,18 @@ import InputField from "@/components/Fields/InputField";
 import TextAreaField from "@/components/Fields/TextAreaField";
 import { useUsers } from "@/hooks/useAuth";
 import SelectWithInput from "@/components/Fields/SelectWithInput";
+import { useAppSelector } from "@/app/hooks";
 
 const CreateProjectPage = () => {
   const navigate = useNavigate();
   const createProject = useCreateProject();
   const { data, isLoading, isError } = useUsers();
+  const { user: loginUser } = useAppSelector((s) => s.auth);
+
+  const usersWithOutMe = data?.data?.filter(
+    (user) => user.email !== loginUser?.email,
+  );
+
   const handleSubmit = async (values: ProjectValues) => {
     console.log(values);
     createProject.mutate(values, {
@@ -87,64 +94,11 @@ const CreateProjectPage = () => {
                   placeholder="Click to open dialog box"
                   id="proj-members"
                   name="members"
-                  options={data?.data}
+                  options={usersWithOutMe}
                   isRequired
                 />
               )}
 
-              {/* Description */}
-              {/* <div>
-                <label
-                  className="block text-sm font-medium mb-1.5"
-                  htmlFor="proj-description"
-                >
-                  Description <span className="text-destructive">*</span>
-                </label>
-                <textarea
-                  id="proj-description"
-                  rows={4}
-                  placeholder="What is this project about?"
-                  {...getFieldProps("description")}
-                  className={`w-full rounded-xl border bg-white/5 px-4 py-2.5 text-sm placeholder:text-muted-foreground outline-none resize-none transition-all focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/20 ${
-                    touched.description && errors.description
-                      ? "border-destructive/60"
-                      : "border-white/15"
-                  }`}
-                />
-                {touched.description && errors.description && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {errors.description}
-                  </p>
-                )}
-              </div> */}
-              {/* Status */}
-              {/* <div>
-                <label
-                  className="block text-sm font-medium mb-1.5"
-                  htmlFor="proj-status"
-                >
-                  Status <span className="text-destructive">*</span>
-                </label>
-                <select
-                  id="proj-status"
-                  value={values.status}
-                  onChange={(e) => setFieldValue("status", e.target.value)}
-                  className={`w-full rounded-xl border bg-background px-4 py-2.5 text-sm outline-none transition-all focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/20 ${
-                    touched.status && errors.status
-                      ? "border-destructive/60"
-                      : "border-white/15"
-                  }`}
-                >
-                  <option value={ProjectStatus.ACTIVE}>Active</option>
-                  <option value={ProjectStatus.COMPLETED}>Completed</option>
-                </select>
-                {touched.status && errors.status && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {String(errors.status)}
-                  </p>
-                )}
-              </div> */}
-              {/* Actions */}
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"

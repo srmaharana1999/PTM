@@ -10,6 +10,7 @@ import { Checkbox } from "../ui/checkbox";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useSearchUsers } from "@/hooks/useAuth";
+import { useAppSelector } from "@/app/hooks";
 
 interface AddMemberModalProps {
   open: boolean;
@@ -26,13 +27,18 @@ const AddMemberModal = ({ open, projectId, onClose }: AddMemberModalProps) => {
 
   const { data: users } = useSearchUsers(dQuery);
 
-  const allUsers = users?.data ?? [];
+  const { user: loginUser } = useAppSelector((s) => s.auth);
 
-  const filteredUsers = allUsers.filter(
-    (user) =>
-      user.name.toLowerCase().includes(dQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(dQuery.toLowerCase()),
+  const usersWithOutMe = users?.data?.filter(
+    (user) => user.email !== loginUser?.email,
   );
+
+  const filteredUsers =
+    usersWithOutMe?.filter(
+      (user) =>
+        user.name.toLowerCase().includes(dQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(dQuery.toLowerCase()),
+    ) || [];
 
   const handleClick = (id: string) => {
     setSelectedIds((prev) => {
