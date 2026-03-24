@@ -1,14 +1,5 @@
 import * as Yup from "yup";
 import { TaskPriority, TaskStatus } from "../types";
-export const initialValues = {
-  title: "",
-  description: "",
-  priority: "",
-  status: "",
-  dueDate: "",
-  assigneeId: "",
-  projectId: "",
-};
 
 export const taskSchema = Yup.object({
   title: Yup.string().required("Required"),
@@ -24,7 +15,18 @@ export const taskSchema = Yup.object({
   projectId: Yup.string().required("Required"),
 });
 
+export type TaskValues = Yup.InferType<typeof taskSchema>;
+
+export const initialValues: TaskValues = {
+  title: "",
+  description: "",
+  priority: TaskPriority.MEDIUM,
+  status: TaskStatus.TODO,
+  dueDate: "",
+  assigneeId: "",
+  projectId: "",
+};
+
 export const createTaskSchema = taskSchema;
 export const editTaskSchema = taskSchema;
 
-export type TaskValues = Yup.InferType<typeof taskSchema>;
