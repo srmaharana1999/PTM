@@ -135,7 +135,7 @@ const ProjectSettingsPage = () => {
                 
                 
                 <button id="save-settings-btn" type="submit" disabled={updateProject.isPending}
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-60">
+                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-linear-to-r from-violet-500 to-fuchsia-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-60">
                   {updateProject.isPending
                     ? <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                     : <><Save className="h-4 w-4" />Save Changes</>

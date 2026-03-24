@@ -25,13 +25,6 @@ const DashboardPage = () => {
 
   const projects = projectsData?.data ?? [];
 
-  // We need task stats across all projects. Use the first project's tasks
-  // for a demo stat — full aggregation would require multiple queries.
-  // We'll aggregate by fetching each project's tasks inline in ProjectRow
-  // and derive global numbers separately.
-
-  // Count tasks from cached queries (already in queryClient cache from ProjectRows)
-  // For the stat cards we use project-level counts as approximations
   const totalProjects = projects.length;
   const activeProjects = projects.filter((p) => p.status === "active").length;
 

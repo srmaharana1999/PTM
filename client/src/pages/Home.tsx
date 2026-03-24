@@ -1,4 +1,4 @@
-import Tasks from "@/components/Tasks";
+
 const Home = () => {
   return (
     <div className="max-w-7xl w-11/12 mx-auto mt-30">
@@ -6,8 +6,6 @@ const Home = () => {
         Welcome,{" "}
         <strong className="capitalize max-sm:block">John Doe 👋</strong>
       </h1>
-
-      <Tasks />
     </div>
   );
 };

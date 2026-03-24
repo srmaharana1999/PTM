@@ -24,7 +24,7 @@ const ProjectsListPage = () => {
         <button
           id="new-project-btn"
           onClick={() => navigate("/projects/new")}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:opacity-90 transition-opacity self-start sm:self-auto"
+          className="flex items-center gap-2 rounded-xl bg-linear-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:opacity-90 transition-opacity self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           New Project
