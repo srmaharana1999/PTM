@@ -166,7 +166,7 @@ const CreateTaskModal = ({ open, projectId, onClose }: CreateTaskModalProps) => 
                   id="create-task-submit"
                   type="submit"
                   disabled={isSubmitting || createTask.isPending}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-violet-500 to-fuchsia-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-60"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-md bg-linear-to-r from-violet-500 to-fuchsia-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-60"
                 >
                   {createTask.isPending ? (
                     <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
