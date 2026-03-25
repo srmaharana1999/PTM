@@ -22,25 +22,31 @@ const app = express();
 // This allows express-rate-limit to correctly read the real client IP from X-Forwarded-For
 app.set("trust proxy", 1);
 
-// Security headers
+// CORS configuration from environment — must be BEFORE helmet and all other middleware
+console.log("ALLOWED_ORIGINS:", process.env.ALLOWED_ORIGINS);
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+  : ["http://localhost:5173", "http://localhost:5174"];
+
+const corsOptions: cors.CorsOptions = {
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+// Handle preflight OPTIONS requests for ALL routes
+app.options("*", cors(corsOptions));
+
+// Apply CORS to all routes
+app.use(cors(corsOptions));
+
+// Security headers (after CORS so it doesn't override CORS headers)
 app.use(helmet());
 
 // =====Middleware====
 app.use(express.json());
 app.use(cookieParser());
-
-// CORS configuration from environment
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
-  "http://localhost:5173",
-  "http://localhost:5174",
-];
-
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  }),
-);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", message: "Server is running." });
