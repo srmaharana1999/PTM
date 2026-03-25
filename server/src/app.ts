@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -18,33 +15,24 @@ import {
 
 const app = express();
 
-// Trust the first proxy in the chain (required for Railway / any reverse proxy)
-// This allows express-rate-limit to correctly read the real client IP from X-Forwarded-For
+// Trust the first proxy (Railway/Vercel) to correctly read client IP
 app.set("trust proxy", 1);
 
-// CORS configuration from environment — must be BEFORE helmet and all other middleware
+// CORS origins
 const rawOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
-  : ["https://ptm-nine.vercel.app", "http://localhost:5173", "http://localhost:5174"];
-
-console.log("[CORS] Allowed origins:", rawOrigins);
+  : [
+      "https://ptm-nine.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ];
 
 const corsOptions: cors.CorsOptions = {
-  origin: (incomingOrigin, callback) => {
-    console.log("[CORS] Incoming origin:", incomingOrigin);
-    // Allow requests with no origin (e.g. curl, Postman, server-to-server)
-    if (!incomingOrigin) return callback(null, true);
-    if (rawOrigins.includes(incomingOrigin)) {
-      callback(null, true);
-    } else {
-      console.warn("[CORS] Blocked origin:", incomingOrigin);
-      callback(new Error(`CORS: origin '${incomingOrigin}' not allowed`));
-    }
-  },
+  origin: rawOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
 };
+
 
 // Apply CORS to all routes (also handles OPTIONS preflight automatically)
 app.use(cors(corsOptions));
