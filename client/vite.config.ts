@@ -15,7 +15,7 @@ export default defineConfig({
       "/api": {
         // Proxy to Railway when testing production server locally.
         // Switch to "http://localhost:3000" when running the server locally.
-        target: "https://ptm-production-1812.up.railway.app",
+        target: "https://api.ptm.srmaharana.online",
         changeOrigin: true,
         secure: true,
       },
@@ -28,4 +28,3 @@ export default defineConfig({
     },
   },
 });
-
