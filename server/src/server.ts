@@ -14,9 +14,7 @@ if (!MONGODB_URI) {
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () =>
-      console.log(`Express Server running at http://localhost:${PORT}`)
-    );
+    app.listen(PORT, () => console.log(`Express Server running!`));
   })
   .catch((error) => {
     console.error("Failed establish connection to MongoDB: ", error);
