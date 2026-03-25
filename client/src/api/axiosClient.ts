@@ -1,9 +1,12 @@
-import axios from "axios";
+import axios, { type InternalAxiosRequestConfig, type AxiosError, type AxiosResponse } from "axios";
 import { store } from "../app/store";
 import { logout, setAccessToken } from "../features/auth/authSlice";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  // In dev: empty string → relative path → Vite proxy forwards to localhost:3000
+  //         cookies are first-party (same origin as client) — no cross-origin cookie issues
+  // In prod: set VITE_API_URL=https://ptm-production-1812.up.railway.app/api in your host env
+  baseURL: import.meta.env.VITE_API_URL ?? "/api",
   withCredentials: true,
 });
 
@@ -19,23 +22,37 @@ api.interceptors.request.use((config) => {
 
 // Handle refresh token on 401
 
-let isRefreshing = false;
-let queue: any[] = [];
+interface QueueItem {
+  resolve: (token: string | null) => void;
+  reject: (error: AxiosError | null) => void;
+}
 
-const resolveQueue = (error: any, token: string | null) => {
+let isRefreshing = false;
+let queue: QueueItem[] = [];
+
+const resolveQueue = (error: AxiosError | null, token: string | null) => {
   queue.forEach((p) => (error ? p.reject(error) : p.resolve(token)));
   queue = [];
 };
 
-api.interceptors.response.use(
-  (res) => res,
-  async (error) => {
-    const originalRequest = error.config;
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
-    // Don't try to refresh token for login/register endpoints
+api.interceptors.response.use(
+  (res: AxiosResponse) => res,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as CustomAxiosRequestConfig;
+
+    if (!originalRequest) return Promise.reject(error);
+
+    // Don't try to refresh token for auth endpoints (login, register, refresh)
+    // Critically: /auth/refresh must be excluded to prevent an infinite refresh loop
+    // when initAuth() fires on app load with no cookie present.
     const isAuthEndpoint =
       originalRequest.url?.includes("/auth/login") ||
-      originalRequest.url?.includes("/auth/register");
+      originalRequest.url?.includes("/auth/register") ||
+      originalRequest.url?.includes("/auth/refresh");
 
     if (
       error.response?.status === 401 &&
@@ -43,10 +60,12 @@ api.interceptors.response.use(
       !isAuthEndpoint
     ) {
       if (isRefreshing) {
-        return new Promise((resolve, reject) => {
+        return new Promise<string | null>((resolve, reject) => {
           queue.push({ resolve, reject });
         }).then((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+          }
           return api(originalRequest);
         });
       }
@@ -54,25 +73,24 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      // console.log('🔄 CLIENT: Access token expired, starting refresh...');
-
       try {
+        // Use raw axios (not the api instance) to avoid re-triggering this interceptor.
+        // VITE_API_URL is the full server URL in prod; in dev the Vite proxy handles /api.
+        const refreshUrl = import.meta.env.VITE_API_URL
+          ? `${import.meta.env.VITE_API_URL}/auth/refresh`
+          : "/api/auth/refresh";
         const res = await axios.post(
-          "http://localhost:3000/api/auth/refresh",
+          refreshUrl,
           {},
           { withCredentials: true },
         );
         const newToken = res.data.accessToken;
 
-        // console.log('✅ CLIENT: Received new access token (first 30 chars):', newToken.substring(0, 100) + '...');
-        // console.log('🔄 CLIENT: Retrying', queue.length + 1, 'queued request(s)');
-
         store.dispatch(setAccessToken(newToken));
         resolveQueue(null, newToken);
         return api(originalRequest);
       } catch (err) {
-        console.log("❌ CLIENT: Token refresh failed, logging out");
-        resolveQueue(err, null);
+        resolveQueue(err as AxiosError, null);
         store.dispatch(logout());
         return Promise.reject(err);
       } finally {

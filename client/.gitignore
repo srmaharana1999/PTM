@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 client_issue_plan.md
+
+.env*
