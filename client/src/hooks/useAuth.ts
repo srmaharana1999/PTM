@@ -1,6 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { changePasswordApi, getMeApi, getUsersApi, searchUsersApi } from "@/api/authApi";
-import type { ChangePasswordValues } from "@/lib/schema/authSchema";
+import {
+  changePasswordApi,
+  getMeApi,
+  getUsersApi,
+  searchUsersApi,
+} from "@/api/authApi";
+import type { ChangePasswordValues } from "@/lib/schema/authSchema.ts";
 
 export const useGetMe = () =>
   useQuery({
@@ -8,7 +13,6 @@ export const useGetMe = () =>
     queryFn: getMeApi,
     staleTime: 1000 * 60 * 5,
   });
-
 
 export const useUsers = () =>
   useQuery({
@@ -27,7 +31,6 @@ export const useChangePassword = () =>
       console.error("Change password failed:", error);
     },
   });
-
 
 export const useSearchUsers = (query: string) =>
   useQuery({

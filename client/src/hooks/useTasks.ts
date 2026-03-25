@@ -6,7 +6,7 @@ import {
   updateTaskApi,
 } from "@/api/taskApi";
 import { queryClient } from "@/lib/queryClient";
-import type { TaskValues } from "@/lib/schema/taskSchema";
+import type { TaskValues } from "@/lib/schema/taskSchema.ts";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetTasks = (projectId: string) =>
@@ -36,7 +36,8 @@ export const useUpdateTask = () =>
 
 export const useDeleteTask = () =>
   useMutation({
-    mutationFn: ({ id }: { id: string; projectId: string }) => deleteTaskApi(id),
+    mutationFn: ({ id }: { id: string; projectId: string }) =>
+      deleteTaskApi(id),
     onSuccess: (_, { projectId }) => {
       queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
     },

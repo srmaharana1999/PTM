@@ -1,62 +1,69 @@
-import { useEffect } from 'react'
-import { Form, Formik } from 'formik'
-import { X, Plus } from 'lucide-react'
-import { useCreateTask } from '@/hooks/useTasks'
-import { useGetProjectMembers } from '@/hooks/useMember'
-import { taskSchema, type TaskValues } from '@/lib/schema/taskSchema'
-import { TaskPriority, TaskStatus } from '@/lib/types'
-import { extractErrorMessage } from '@/lib/utils'
-import toast from 'react-hot-toast'
-import InputField from '../Fields/InputField'
-import TextAreaField from '../Fields/TextAreaField'
-import RadioGroupField from '../Fields/RadioGroudField'
-import SelectField from '../Fields/SelectField'
-import DatePicker from '../Fields/DatePicker'
+import { useEffect } from "react";
+import { Form, Formik } from "formik";
+import { X, Plus } from "lucide-react";
+import { useCreateTask } from "@/hooks/useTasks";
+import { useGetProjectMembers } from "@/hooks/useMember";
+import { taskSchema, type TaskValues } from "@/lib/schema/taskSchema.ts";
+import { TaskPriority, TaskStatus } from "@/lib/types";
+import { extractErrorMessage } from "@/lib/utils";
+import toast from "react-hot-toast";
+import InputField from "../Fields/InputField";
+import TextAreaField from "../Fields/TextAreaField";
+import RadioGroupField from "../Fields/RadioGroudField";
+import SelectField from "../Fields/SelectField";
+import DatePicker from "../Fields/DatePicker";
 
 interface CreateTaskModalProps {
-  open: boolean
-  projectId: string
-  onClose: () => void
+  open: boolean;
+  projectId: string;
+  onClose: () => void;
 }
 
 const initialValues = (projectId: string): TaskValues => ({
-  title: '',
-  description: '',
+  title: "",
+  description: "",
   priority: TaskPriority.MEDIUM,
   status: TaskStatus.TODO,
-  dueDate: '',
-  assigneeId: '',
+  dueDate: "",
+  assigneeId: "",
   projectId,
-})
+});
 
-const CreateTaskModal = ({ open, projectId, onClose }: CreateTaskModalProps) => {
-  const createTask = useCreateTask()
-  const { data: membersData } = useGetProjectMembers(projectId)
-  const members = membersData?.data ?? []
+const CreateTaskModal = ({
+  open,
+  projectId,
+  onClose,
+}: CreateTaskModalProps) => {
+  const createTask = useCreateTask();
+  const { data: membersData } = useGetProjectMembers(projectId);
+  const members = membersData?.data ?? [];
 
   // Lock body scroll
   useEffect(() => {
-    if (open) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
     return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
-  if (!open) return null
+  if (!open) return null;
 
-  const handleSubmit = (values: TaskValues, { resetForm }: { resetForm: () => void }) => {
+  const handleSubmit = (
+    values: TaskValues,
+    { resetForm }: { resetForm: () => void },
+  ) => {
     createTask.mutate(values, {
       onSuccess: () => {
-        toast.success('Task created!')
-        resetForm()
-        onClose()
+        toast.success("Task created!");
+        resetForm();
+        onClose();
       },
       onError: (err) => {
-        toast.error(extractErrorMessage(err))
+        toast.error(extractErrorMessage(err));
       },
-    })
-  }
+    });
+  };
 
   return (
     <div
@@ -65,7 +72,10 @@ const CreateTaskModal = ({ open, projectId, onClose }: CreateTaskModalProps) => 
       role="dialog"
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
       {/* Panel */}
       <div className="relative z-10 w-full max-w-lg rounded-2xl border border-white/15 bg-background/95 backdrop-blur-2xl shadow-2xl animate-in zoom-in-95 fade-in duration-200">
@@ -111,28 +121,28 @@ const CreateTaskModal = ({ open, projectId, onClose }: CreateTaskModalProps) => 
                   isRequired
                 />
                 <div className="grid grid-cols-2 gap-4">
-                <RadioGroupField
-                  options={[
-                    { value: TaskPriority.LOW, label: 'Low' },
-                    { value: TaskPriority.MEDIUM, label: 'Medium' },
-                    { value: TaskPriority.HIGH, label: 'High' },
-                  ]}
-                  label="Priority"
-                  name="priority"
-                  id="task-priority"
-                  isRequired
-                />
-                <RadioGroupField
-                  options={[
-                    { value: TaskStatus.TODO, label: 'To Do' },
-                    { value: TaskStatus.IN_PROGRESS, label: 'In Progress' },
-                    { value: TaskStatus.DONE, label: 'Done' },
-                  ]}
-                  label="Status"
-                  name="status"
-                  id="task-status"
-                  isRequired
-                />
+                  <RadioGroupField
+                    options={[
+                      { value: TaskPriority.LOW, label: "Low" },
+                      { value: TaskPriority.MEDIUM, label: "Medium" },
+                      { value: TaskPriority.HIGH, label: "High" },
+                    ]}
+                    label="Priority"
+                    name="priority"
+                    id="task-priority"
+                    isRequired
+                  />
+                  <RadioGroupField
+                    options={[
+                      { value: TaskStatus.TODO, label: "To Do" },
+                      { value: TaskStatus.IN_PROGRESS, label: "In Progress" },
+                      { value: TaskStatus.DONE, label: "Done" },
+                    ]}
+                    label="Status"
+                    name="status"
+                    id="task-status"
+                    isRequired
+                  />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <DatePicker
@@ -146,12 +156,14 @@ const CreateTaskModal = ({ open, projectId, onClose }: CreateTaskModalProps) => 
                     label="Assignee"
                     name="assigneeId"
                     placeholder="Select assignee"
-                    options={members.map((m) => ({ value: m.user._id, label: m.user.name }))}
+                    options={members.map((m) => ({
+                      value: m.user._id,
+                      label: m.user.name,
+                    }))}
                     isRequired
                   />
                 </div>
               </div>
-
 
               {/* Footer */}
               <div className="flex gap-3 px-6 py-4 border-t border-white/10">
@@ -183,7 +195,7 @@ const CreateTaskModal = ({ open, projectId, onClose }: CreateTaskModalProps) => 
         </Formik>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreateTaskModal
+export default CreateTaskModal;

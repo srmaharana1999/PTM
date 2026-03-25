@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
-import {  Layers, UserPlus } from "lucide-react";
+import { Layers, UserPlus } from "lucide-react";
 import { useAppDispatch } from "@/app/hooks";
 import { registerUser } from "@/features/auth/authThunks";
 import {
   registerSchema,
   initialValues,
   type registerTypes,
-} from "@/lib/schema/register";
+} from "@/lib/schema/register.ts";
 import { extractErrorMessage } from "@/lib/utils";
 import toast from "react-hot-toast";
 import InputField from "@/components/Fields/InputField";
@@ -81,11 +81,36 @@ const Register = () => {
             {({ isSubmitting }) => (
               <Form className="space-y-4">
                 {/* Name */}
-                <InputField id="reg-name" label="Full Name" name="name" type="text" placeholder="John Doe" isRequired={true} />
-                <InputField id="reg-email" label="Email" name="email" type="email" placeholder="you@example.com" isRequired={true} />
-                <PasswordField id="reg-password" label="Password" name="password" placeholder="••••••••" isRequired={true} />
-                <PasswordField id="reg-confirm-password" label="Confirm Password" name="confirmPassword" placeholder="••••••••" isRequired={true} />
-                
+                <InputField
+                  id="reg-name"
+                  label="Full Name"
+                  name="name"
+                  type="text"
+                  placeholder="John Doe"
+                  isRequired={true}
+                />
+                <InputField
+                  id="reg-email"
+                  label="Email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  isRequired={true}
+                />
+                <PasswordField
+                  id="reg-password"
+                  label="Password"
+                  name="password"
+                  placeholder="••••••••"
+                  isRequired={true}
+                />
+                <PasswordField
+                  id="reg-confirm-password"
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  placeholder="••••••••"
+                  isRequired={true}
+                />
 
                 {/* Submit */}
                 <button

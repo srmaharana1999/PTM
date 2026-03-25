@@ -1,14 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {  Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { ArrowLeft, Save, Trash2 } from "lucide-react";
-import { useGetProjectById, useUpdateProject, useDeleteProject } from "@/hooks/useProjects";
+import {
+  useGetProjectById,
+  useUpdateProject,
+  useDeleteProject,
+} from "@/hooks/useProjects";
 import { useGetProjectMembers } from "@/hooks/useMember";
 import { useAppSelector } from "@/app/hooks";
-import { projectSchema } from "@/lib/schema/projectSchema";
-import { ProjectRole, ProjectStatus, type IUpdateProjectValue } from "@/lib/types";
+import { projectSchema } from "@/lib/schema/projectSchema.ts";
+import {
+  ProjectRole,
+  ProjectStatus,
+  type IUpdateProjectValue,
+} from "@/lib/types";
 import { extractErrorMessage } from "@/lib/utils";
-import { LoadingSpinner, ErrorMessage, ConfirmDialog } from "@/components/shared";
+import {
+  LoadingSpinner,
+  ErrorMessage,
+  ConfirmDialog,
+} from "@/components/shared";
 import toast from "react-hot-toast";
 import InputField from "@/components/Fields/InputField";
 import TextAreaField from "@/components/Fields/TextAreaField";
@@ -37,9 +49,9 @@ const ProjectSettingsPage = () => {
   const project = projectQuery.data?.data;
   const members = membersQuery.data?.data ?? [];
 
-  const projectMembers = members.map((member) =>member?.user._id);
+  const projectMembers = members.map((member) => member?.user._id);
 
-  console.log(project)
+  console.log(project);
 
   // Only project OWNER can access this page
   useEffect(() => {
@@ -65,7 +77,13 @@ const ProjectSettingsPage = () => {
     );
   }
   if (projectQuery.isError || !project) {
-    return <ErrorMessage error={projectQuery.error} onRetry={projectQuery.refetch} className="max-w-sm mx-auto mt-10" />;
+    return (
+      <ErrorMessage
+        error={projectQuery.error}
+        onRetry={projectQuery.refetch}
+        className="max-w-sm mx-auto mt-10"
+      />
+    );
   }
 
   const initialValues: IUpdateProjectValue = {
@@ -81,7 +99,7 @@ const ProjectSettingsPage = () => {
       {
         onSuccess: () => toast.success("Project updated!"),
         onError: (err) => toast.error(extractErrorMessage(err)),
-      }
+      },
     );
   };
 
@@ -128,18 +146,53 @@ const ProjectSettingsPage = () => {
             {() => (
               <Form className="space-y-5">
                 {/* Title */}
-                <InputField label="Title" type="text" name="title" placeholder="Project Title" id="settings-title" isRequired />
-                <TextAreaField label="Description" name="description" placeholder="Project Description" id="settings-desc" rows={4} isRequired />
-                <SelectField label="Status" name="status" placeholder="Project Status" id="settings-status" options={statusOptions} isRequired />
-                <SelectWithInput label="Members" name="members" placeholder="Project Members" id="settings-members" options={allUsers?.data} isRequired />
-                
-                
-                <button id="save-settings-btn" type="submit" disabled={updateProject.isPending}
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-linear-to-r from-violet-500 to-fuchsia-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-60">
-                  {updateProject.isPending
-                    ? <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                    : <><Save className="h-4 w-4" />Save Changes</>
-                  }
+                <InputField
+                  label="Title"
+                  type="text"
+                  name="title"
+                  placeholder="Project Title"
+                  id="settings-title"
+                  isRequired
+                />
+                <TextAreaField
+                  label="Description"
+                  name="description"
+                  placeholder="Project Description"
+                  id="settings-desc"
+                  rows={4}
+                  isRequired
+                />
+                <SelectField
+                  label="Status"
+                  name="status"
+                  placeholder="Project Status"
+                  id="settings-status"
+                  options={statusOptions}
+                  isRequired
+                />
+                <SelectWithInput
+                  label="Members"
+                  name="members"
+                  placeholder="Project Members"
+                  id="settings-members"
+                  options={allUsers?.data}
+                  isRequired
+                />
+
+                <button
+                  id="save-settings-btn"
+                  type="submit"
+                  disabled={updateProject.isPending}
+                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-linear-to-r from-violet-500 to-fuchsia-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-60"
+                >
+                  {updateProject.isPending ? (
+                    <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      Save Changes
+                    </>
+                  )}
                 </button>
               </Form>
             )}
@@ -148,9 +201,12 @@ const ProjectSettingsPage = () => {
 
         {/* Danger Zone */}
         <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 space-y-3">
-          <h2 className="text-sm font-semibold text-destructive">Danger Zone</h2>
+          <h2 className="text-sm font-semibold text-destructive">
+            Danger Zone
+          </h2>
           <p className="text-sm text-muted-foreground">
-            Deleting this project will also permanently delete all its tasks. This action cannot be undone.
+            Deleting this project will also permanently delete all its tasks.
+            This action cannot be undone.
           </p>
           <button
             id="delete-project-danger-btn"

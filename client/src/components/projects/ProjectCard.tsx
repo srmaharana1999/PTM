@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Settings, Eye, Trash2, Users, Calendar } from "lucide-react";
+import { Settings, Eye, Trash2, Calendar } from "lucide-react";
 import { useAppSelector } from "@/app/hooks";
 import { useDeleteProject } from "@/hooks/useProjects";
 import { ProjectStatusBadge } from "@/components/shared/Badge";
@@ -29,8 +29,8 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       },
       onError: (err: unknown) => {
         const msg =
-          (err as { response?: { data?: { message?: string } } })?.response?.data
-            ?.message ?? "Delete failed.";
+          (err as { response?: { data?: { message?: string } } })?.response
+            ?.data?.message ?? "Delete failed.";
         toast.error(msg);
         setConfirmOpen(false);
       },

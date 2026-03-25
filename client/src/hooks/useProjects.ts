@@ -6,7 +6,7 @@ import {
   updateProjectApi,
 } from "@/api/projectApi";
 import { queryClient } from "@/lib/queryClient";
-import type { ProjectValues } from "@/lib/schema/projectSchema";
+import type { ProjectValues } from "@/lib/schema/projectSchema.ts";
 import type { IUpdateProjectValue } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 

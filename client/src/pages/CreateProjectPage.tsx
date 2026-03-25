@@ -6,7 +6,7 @@ import {
   projectSchema,
   initialValues,
   type ProjectValues,
-} from "@/lib/schema/projectSchema";
+} from "@/lib/schema/projectSchema.ts";
 import { extractErrorMessage } from "@/lib/utils";
 import toast from "react-hot-toast";
 import InputField from "@/components/Fields/InputField";

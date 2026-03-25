@@ -1,5 +1,5 @@
 // `taskApi.ts`
-import type { TaskValues } from "@/lib/schema/taskSchema";
+import type { TaskValues } from "@/lib/schema/taskSchema.ts";
 import type { ApiResponse, ITask } from "@/lib/types";
 import api from "./axiosClient";
 
