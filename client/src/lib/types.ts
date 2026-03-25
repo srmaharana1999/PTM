@@ -69,7 +69,7 @@ export interface ITask {
   title: string;
   description: string;
   createdBy: Creator;
-  project: Project;
+  projectId: Project;
   assigneeId: Assignee;
   priority: TaskPriority;
   status: TaskStatus;

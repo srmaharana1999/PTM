@@ -27,8 +27,13 @@ export const useCreateTask = () =>
 
 export const useUpdateTask = () =>
   useMutation({
-    mutationFn: ({ id, data }: { id: string; data: TaskValues }) =>
-      updateTaskApi({ id, data }),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<TaskValues> & { projectId: string };
+    }) => updateTaskApi({ id, data }),
     onSuccess: (_, { data }) => {
       queryClient.invalidateQueries({ queryKey: ["tasks", data.projectId] });
     },

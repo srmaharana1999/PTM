@@ -120,29 +120,53 @@ export const updateTask = async (req: AuthRequest, res: Response) => {
   if (!userId) throw new AppError("Unauthorized", 401);
 
   const taskId = req.params.id;
+  // Get projectId from body as it is used to check permissions in the project
   const { projectId, ...updateBody } = req.body;
 
-  if (!projectId)
+  if (!projectId) {
     throw new AppError("projectId is required in the request body.", 400);
+  }
 
+  // 1. Get user role in the project
   const membership = await requireMembership(userId, projectId);
 
-  if (membership.role === ProjectRole.MEMBER) {
-    throw new AppError("Only project owners and admins can update tasks.", 403);
+  // 2. Find the task (ensuring it belongs to the specified project)
+  const task = await Task.findOne({ _id: taskId, projectId });
+  if (!task) {
+    throw new AppError("Task not found in this project.", 404);
   }
 
-  const updatedTask = await Task.findByIdAndUpdate(taskId, updateBody, {
-    new: true,
-    runValidators: true,
+  // 3. Check permissions
+  const isOwnerOrAdmin = [ProjectRole.OWNER, ProjectRole.ADMIN].includes(
+    membership.role as ProjectRole,
+  );
+  const isAssignee = task.assigneeId?.toString() === userId;
+
+  if (isOwnerOrAdmin) {
+    // Owners and admins can update everything
+    Object.assign(task, updateBody);
+  } else if (isAssignee) {
+    // Assignees can ONLY update the status
+    if (updateBody.status) {
+      task.status = updateBody.status;
+    } else if (Object.keys(updateBody).length > 0) {
+      throw new AppError(
+        "You can only update the status of your assigned tasks.",
+        403,
+      );
+    }
+  } else {
+    // Other members cannot update the task at all
+    throw new AppError("You are not authorized to update this task.", 403);
+  }
+
+  // 4. Save the task
+  const updatedTask = await task.save();
+
+  return res.status(200).json({
+    message: "Task updated successfully.",
+    data: updatedTask,
   });
-
-  if (!updatedTask) {
-    throw new AppError("Task not found.", 404);
-  }
-
-  return res
-    .status(200)
-    .json({ message: "Task updated successfully.", data: updatedTask });
 };
 
 // ─── Delete Task ──────────────────────────────────────────────────────────────

@@ -27,7 +27,7 @@ export const updateTaskApi = async ({
   data,
 }: {
   id: string;
-  data: TaskValues;
+  data: Partial<TaskValues> & { projectId: string };
 }): Promise<ApiResponse<ITask>> => {
   const response = await api.put(`/tasks/${id}`, data);
   return response.data;
