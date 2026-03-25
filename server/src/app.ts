@@ -23,22 +23,30 @@ const app = express();
 app.set("trust proxy", 1);
 
 // CORS configuration from environment — must be BEFORE helmet and all other middleware
-console.log("ALLOWED_ORIGINS:", process.env.ALLOWED_ORIGINS);
-const allowedOrigins = process.env.ALLOWED_ORIGINS
+const rawOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
   : ["https://ptm-nine.vercel.app", "http://localhost:5173", "http://localhost:5174"];
 
+console.log("[CORS] Allowed origins:", rawOrigins);
+
 const corsOptions: cors.CorsOptions = {
-  origin: allowedOrigins,
+  origin: (incomingOrigin, callback) => {
+    console.log("[CORS] Incoming origin:", incomingOrigin);
+    // Allow requests with no origin (e.g. curl, Postman, server-to-server)
+    if (!incomingOrigin) return callback(null, true);
+    if (rawOrigins.includes(incomingOrigin)) {
+      callback(null, true);
+    } else {
+      console.warn("[CORS] Blocked origin:", incomingOrigin);
+      callback(new Error(`CORS: origin '${incomingOrigin}' not allowed`));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// Handle preflight OPTIONS requests for ALL routes
-app.options("*", cors(corsOptions));
-
-// Apply CORS to all routes
+// Apply CORS to all routes (also handles OPTIONS preflight automatically)
 app.use(cors(corsOptions));
 
 // Security headers (after CORS so it doesn't override CORS headers)
