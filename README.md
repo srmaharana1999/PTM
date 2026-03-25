@@ -25,7 +25,8 @@ A powerful, modern, and high-performance **Project Tracking Management (PTM)** s
 
 ## 🚀 Live Deployment
 
-[![LIVE](https://img.shields.io/badge/Production-Live-green?style=for-the-badge)](https://ptm.srmaharana.online)
+[![LIVE](https://img.shields.io/badge/Production-LIVE1-green?style=for-the-badge)](https://ptm.srmaharana.online)
+[![LIVE](https://img.shields.io/badge/Production-LIVE2-blue?style=for-the-badge)](https://ptm-nine.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](#)
 
 ## 🛠️ Technology Stack
