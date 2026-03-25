@@ -26,7 +26,7 @@ app.set("trust proxy", 1);
 console.log("ALLOWED_ORIGINS:", process.env.ALLOWED_ORIGINS);
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
-  : ["https://ptm-nine.vercel.app/", "http://localhost:5173", "http://localhost:5174"];
+  : ["https://ptm-nine.vercel.app", "http://localhost:5173", "http://localhost:5174"];
 
 const corsOptions: cors.CorsOptions = {
   origin: allowedOrigins,
