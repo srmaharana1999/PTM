@@ -1,14 +1,19 @@
-import axios, { type InternalAxiosRequestConfig, type AxiosError, type AxiosResponse } from "axios";
+import axios, {
+  type InternalAxiosRequestConfig,
+  type AxiosError,
+  type AxiosResponse,
+} from "axios";
 import { store } from "../app/store";
 import { logout, setAccessToken } from "../features/auth/authSlice";
 
 const api = axios.create({
-  // In dev: empty string → relative path → Vite proxy forwards to localhost:3000
-  //         cookies are first-party (same origin as client) — no cross-origin cookie issues
-  // In prod: set VITE_API_URL=https://ptm-production-1812.up.railway.app/api in your host env
-  baseURL: import.meta.env.VITE_API_URL ?? "/api",
+  // In dev: Vite proxy uses "/api" -> hits your config target
+  // In prod: Vercel rewrite uses "/api" -> hits Railway
+  // Do NOT set VITE_API_URL in Vercel to allow the proxy to handle cookies correctly.
+  baseURL: import.meta.env.VITE_API_URL || "/api",
   withCredentials: true,
 });
+
 
 // Attach access token to requests
 
@@ -74,17 +79,12 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Use raw axios (not the api instance) to avoid re-triggering this interceptor.
-        // VITE_API_URL is the full server URL in prod; in dev the Vite proxy handles /api.
-        const refreshUrl = import.meta.env.VITE_API_URL
-          ? `${import.meta.env.VITE_API_URL}/auth/refresh`
-          : "/api/auth/refresh";
-        const res = await axios.post(
-          refreshUrl,
-          {},
-          { withCredentials: true },
-        );
+        // Since you have the Vite proxy configured in vite.config.ts,
+        // it's safer to use the relative path "/api/auth/refresh" 
+        // to ensure cookies are handled consistently by the proxy.
+        const res = await axios.post("/api/auth/refresh", {}, { withCredentials: true });
         const newToken = res.data.accessToken;
+
 
         store.dispatch(setAccessToken(newToken));
         resolveQueue(null, newToken);
