@@ -5,7 +5,7 @@
 //   - `updateProjectApi(projectId, data)`
 //   - `deleteProjectApi(projectId)`
 
-import type { ProjectValues } from "@/lib/schema/projectSchema.ts";
+import type { ProjectValues } from "@/lib/schema/projectSchema";
 import type { ApiResponse, IProject, IUpdateProjectValue } from "@/lib/types";
 import api from "./axiosClient";
 

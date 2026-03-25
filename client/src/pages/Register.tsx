@@ -8,7 +8,7 @@ import {
   registerSchema,
   initialValues,
   type registerTypes,
-} from "@/lib/schema/register.ts";
+} from "@/lib/schema/register";
 import { extractErrorMessage } from "@/lib/utils";
 import toast from "react-hot-toast";
 import InputField from "@/components/Fields/InputField";

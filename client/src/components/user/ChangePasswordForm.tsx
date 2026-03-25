@@ -6,7 +6,7 @@ import {
   changePasswordInitialValues,
   changePasswordSchema,
   type ChangePasswordValues,
-} from "@/lib/schema/authSchema.ts";
+} from "@/lib/schema/authSchema";
 import { extractErrorMessage } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useChangePassword } from "@/hooks/useAuth";

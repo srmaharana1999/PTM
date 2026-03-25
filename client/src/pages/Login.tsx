@@ -8,7 +8,7 @@ import {
   loginSchema,
   initialValues,
   type loginTypes,
-} from "@/lib/schema/login.ts";
+} from "@/lib/schema/login";
 import { extractErrorMessage } from "@/lib/utils";
 import toast from "react-hot-toast";
 import InputField from "@/components/Fields/InputField";

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { X, Save, Eye } from "lucide-react";
-import { type TaskValues } from "@/lib/schema/taskSchema.ts";
+import { type TaskValues } from "@/lib/schema/taskSchema";
 import { ProjectRole, type ITask } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { PriorityBadge, TaskStatusBadge } from "@/components/shared";

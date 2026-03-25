@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { X, Plus } from "lucide-react";
 import { useCreateTask } from "@/hooks/useTasks";
 import { useGetProjectMembers } from "@/hooks/useMember";
-import { taskSchema, type TaskValues } from "@/lib/schema/taskSchema.ts";
+import { taskSchema, type TaskValues } from "@/lib/schema/taskSchema";
 import { TaskPriority, TaskStatus } from "@/lib/types";
 import { extractErrorMessage } from "@/lib/utils";
 import toast from "react-hot-toast";

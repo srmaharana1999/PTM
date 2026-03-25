@@ -6,7 +6,7 @@ import {
   updateTaskApi,
 } from "@/api/taskApi";
 import { queryClient } from "@/lib/queryClient";
-import type { TaskValues } from "@/lib/schema/taskSchema.ts";
+import type { TaskValues } from "@/lib/schema/taskSchema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetTasks = (projectId: string) =>

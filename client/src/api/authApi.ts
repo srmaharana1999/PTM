@@ -10,7 +10,7 @@ import type {
   ChangePasswordValues,
   LoginValues,
   RegisterValues,
-} from "@/lib/schema/authSchema.ts";
+} from "@/lib/schema/authSchema";
 import type { ApiResponse, User } from "@/lib/types";
 import api from "./axiosClient";
 

@@ -5,7 +5,7 @@ import {
   getUsersApi,
   searchUsersApi,
 } from "@/api/authApi";
-import type { ChangePasswordValues } from "@/lib/schema/authSchema.ts";
+import type { ChangePasswordValues } from "@/lib/schema/authSchema";
 
 export const useGetMe = () =>
   useQuery({

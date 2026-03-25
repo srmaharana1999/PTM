@@ -9,7 +9,7 @@ import {
 } from "@/hooks/useProjects";
 import { useGetProjectMembers } from "@/hooks/useMember";
 import { useAppSelector } from "@/app/hooks";
-import { projectSchema } from "@/lib/schema/projectSchema.ts";
+import { projectSchema } from "@/lib/schema/projectSchema";
 import {
   ProjectRole,
   ProjectStatus,
