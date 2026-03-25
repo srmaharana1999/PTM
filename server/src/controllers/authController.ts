@@ -14,12 +14,12 @@ const isProd = process.env.NODE_ENV === "production";
 
 // ─── Cookie Options Helper ────────────────────────────────────────────────────
 
-const refreshCookieOptions = {
-  httpOnly: true,
-  secure: isProd,
-  sameSite: isProd ? ("none" as const) : ("lax" as const),
-  path: "/",
-};
+// const refreshCookieOptions = {
+//   httpOnly: true,
+//   secure: isProd,
+//   sameSite: isProd ? ("none" as const) : ("lax" as const),
+//   path: "/",
+// };
 
 // ─── Register ─────────────────────────────────────────────────────────────────
 
@@ -101,7 +101,10 @@ export const login = async (req: Request, res: Response) => {
   await session.save();
 
   res.cookie("refreshToken", refreshToken, {
-    ...refreshCookieOptions,
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? ("none" as const) : ("lax" as const),
+    path: "/",
     maxAge: REFRESH_TOKEN_EXPIRES_MS,
   });
 
@@ -180,7 +183,13 @@ export const logout = async (req: Request, res: Response) => {
     }
   }
 
-  res.clearCookie("refreshToken", { ...refreshCookieOptions, maxAge: 0 });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? ("none" as const) : ("lax" as const),
+    path: "/",
+    maxAge: 0,
+  });
 
   return res.status(200).json({ message: "Logged out successfully." });
 };
