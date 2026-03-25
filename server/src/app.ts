@@ -1,6 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import "./models/session.model";
@@ -13,8 +15,6 @@ import {
   notFoundHandler,
   globalErrorHandler,
 } from "./middlewares/errorHandler";
-
-dotenv.config();
 
 const app = express();
 
