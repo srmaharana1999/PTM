@@ -18,6 +18,10 @@ dotenv.config();
 
 const app = express();
 
+// Trust the first proxy in the chain (required for Railway / any reverse proxy)
+// This allows express-rate-limit to correctly read the real client IP from X-Forwarded-For
+app.set("trust proxy", 1);
+
 // Security headers
 app.use(helmet());
 
