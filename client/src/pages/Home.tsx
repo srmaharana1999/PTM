@@ -1,13 +1,11 @@
+import Header from "@/components/Home";
 
-const Home = () => {
+const HomePage = () => {
   return (
-    <div className="max-w-7xl w-11/12 mx-auto mt-30">
-      <h1 className="text-3xl font-bold leading-relaxed">
-        Welcome,{" "}
-        <strong className="capitalize max-sm:block">John Doe 👋</strong>
-      </h1>
+    <div className="bg-linear-to-b from-fuchsia-100 via-fuchsia-200 to-violet-300 h-screen ">
+      <Header />
     </div>
   );
 };
 
-export default Home;
+export default HomePage;
