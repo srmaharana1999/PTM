@@ -1,5 +1,6 @@
 import { LucideChevronsDown } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import dashboardImg from "../../assets/dashboard-data.png";
 
 const Hero = () => {
   return (
@@ -37,8 +38,9 @@ const Hero = () => {
         </NavLink>
       </div>
       <div className="shadow-2xl max-w-5xl rounded-3xl overflow-hidden w-11/12 mx-auto relative z-10 animate-in fade-in zoom-in-95 duration-1000 border-8 border-white">
-        <img src="/src/assets/dashboard.png" alt="ptm_dashboard_snapshot" />
+        <img src={dashboardImg} alt="ptm_dashboard_snapshot" />
       </div>
+
     </div>
   );
 };
