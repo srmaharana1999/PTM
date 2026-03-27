@@ -7,6 +7,7 @@ import {
   X,
   ChevronRight,
   Layers,
+  HomeIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
@@ -31,6 +32,12 @@ const navItems = [
     label: "Profile",
     href: "/profile",
     icon: User,
+    end: true,
+  },
+  {
+    label: "Home",
+    href: "/",
+    icon: HomeIcon,
     end: true,
   },
 ];
