@@ -1,7 +1,10 @@
-import { cn } from "@/lib/utils";
-import { ArrowRight, MenuIcon, X } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { logoutUser } from "@/features/auth/authThunks";
+import { cn, getInitials } from "@/lib/utils";
+import { ArrowRight, LogOutIcon, MenuIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import toast from "react-hot-toast";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const navItems = [
   {
@@ -24,6 +27,9 @@ const navItems = [
 const Header = () => {
   const [open, setOpen] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAppSelector((s) => s.auth);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScrolled = () => {
@@ -37,7 +43,15 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll", handleScrolled);
   }, []);
-  console.log(scrolled);
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser());
+      navigate("/login", { replace: true });
+    } catch {
+      toast.error("Logout failed. Please try again.");
+    }
+  };
   return (
     <nav
       className={cn(
@@ -74,19 +88,36 @@ const Header = () => {
               {item.label}
             </NavLink>
           ))}
-          <NavLink
-            to="login"
-            className="capitalize font-medium text-neutral-500 hover:text-neutral-900"
-          >
-            Login
-          </NavLink>
-          <NavLink
-            to="/register"
-            className="bg-chart-1 drop-shadow-sm px-4 py-1.5 flex items-center gap-2 rounded-full"
-          >
-            <p>Get Started</p>
-            <ArrowRight />{" "}
-          </NavLink>
+          {user ? (
+            <>
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-linear-to-br from-violet-500 to-fuchsia-500 text-[10px] font-bold text-white">
+                {getInitials(user.name)}
+              </div>
+              <button
+                onClick={handleLogout}
+                className=" border border-red-500 text-red-500 shadow-sm hover:bg-red-500/10 hover:cursor-pointer  px-4 py-1.5 flex items-center gap-2 rounded-md"
+              >
+                <p>Signout</p>
+                <LogOutIcon />{" "}
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink
+                to="login"
+                className="capitalize font-medium text-neutral-500 hover:text-neutral-900"
+              >
+                Signin
+              </NavLink>
+              <NavLink
+                to="/register"
+                className="bg-chart-1 drop-shadow-sm px-4 py-1.5 flex items-center gap-2 rounded-full"
+              >
+                <p>Get Started</p>
+                <ArrowRight />{" "}
+              </NavLink>
+            </>
+          )}
         </div>
 
         <button className="md:hidden" onClick={() => setOpen((pre) => !pre)}>
@@ -120,17 +151,32 @@ const Header = () => {
             {item.label}
           </NavLink>
         ))}
-        <NavLink
-          to="login"
-          className="capitalize font-medium text-neutral-500 hover:text-neutral-900"
-        >
-          Login
-        </NavLink>
-        <div className="bg-chart-1 drop-shadow-sm px-4 py-2 flex items-center rounded-full">
-          <p>Get Started</p>
-          <ArrowRight />{" "}
-        </div>
-        <div className="flex items-center gap-4"></div>
+        {user ? (
+          <>
+            <p className="font-semibold truncate text-fuchsia-700 ">
+              {user.name}
+            </p>
+            <button
+              onClick={handleLogout}
+              className="font-semibold truncate text-red-700 "
+            >
+              Signout
+            </button>
+          </>
+        ) : (
+          <>
+            <NavLink
+              to="login"
+              className="capitalize font-medium text-neutral-500 hover:text-neutral-900"
+            >
+              Signin
+            </NavLink>
+            <div className="bg-chart-1 drop-shadow-sm px-4 py-2 flex items-center rounded-full">
+              <p>Get Started</p>
+              <ArrowRight />{" "}
+            </div>
+          </>
+        )}
       </div>
     </nav>
   );
