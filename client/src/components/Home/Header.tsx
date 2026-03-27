@@ -120,7 +120,10 @@ const Header = () => {
           )}
         </div>
 
-        <button className="md:hidden" onClick={() => setIsMenuOpen((pre) => !pre)}>
+        <button
+          className="md:hidden"
+          onClick={() => setIsMenuOpen((pre) => !pre)}
+        >
           {isMenuOpen ? (
             <X className="text-neutral-900" />
           ) : (
@@ -131,7 +134,9 @@ const Header = () => {
       <div
         className={cn(
           "absolute inset-x-0 flex flex-col md:hidden gap-6 py-6 items-center bg-linear-to-b from-violet-200 to-fuchsia-200 border-b border-t border-white/60 transition-transform origin-top ease-in-out duration-500",
-          isMenuOpen ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible",
+          isMenuOpen
+            ? "scale-y-100 opacity-100 visible"
+            : "scale-y-0 opacity-0 invisible",
         )}
       >
         {navItems.map((item) => (
@@ -171,10 +176,13 @@ const Header = () => {
             >
               Signin
             </NavLink>
-            <div className="bg-chart-1 drop-shadow-sm px-4 py-2 flex items-center rounded-full">
+            <NavLink
+              to="/register"
+              className="bg-chart-1 drop-shadow-sm px-4 py-1.5 flex items-center gap-2 rounded-full"
+            >
               <p>Get Started</p>
               <ArrowRight />{" "}
-            </div>
+            </NavLink>
           </>
         )}
       </div>

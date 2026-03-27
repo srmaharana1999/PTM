@@ -51,13 +51,13 @@ const FeatureHighlight = () => {
   return (
     <div className="bg-gray-50 py-16 md:py-20">
       <div className="max-w-6xl w-11/12 md:w-fit mx-auto">
-        <div className="text-center fade-in-animation mb-10 md:mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="text-center fade-in-animation mb-16 md:mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <h3 className="text-violet-600 font-semibold tracking-wider uppercase text-sm mb-4">
             Platform Features
           </h3>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 mb-6 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-6 tracking-tight">
             Everything you need to{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-600 to-fuchsia-600">
+            <span className="text-transparent max-sm:block bg-clip-text bg-linear-to-r from-violet-600 to-fuchsia-600">
               stay on track
             </span>
           </h2>
@@ -66,7 +66,7 @@ const FeatureHighlight = () => {
             designed to streamline your workflow and boost productivity.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-fit mx-auto gap-8 md:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-fit mx-auto gap-10">
           {features.map((item) => (
             <FeatureCard
               key={item.name}
