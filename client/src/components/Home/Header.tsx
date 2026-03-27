@@ -25,7 +25,7 @@ const navItems = [
 ];
 
 const Header = () => {
-  const [open, setOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAppSelector((s) => s.auth);
   const dispatch = useAppDispatch();
@@ -78,7 +78,7 @@ const Header = () => {
               end={item.end}
               className={({ isActive }) =>
                 cn(
-                  "capitalize font-medium",
+                  "capitalize font-medium transition-colors duration-300 ease-in-out",
                   isActive
                     ? " text-violet-900 "
                     : "text-neutral-500 hover:text-neutral-900",
@@ -98,7 +98,7 @@ const Header = () => {
                 className=" border border-red-500 text-red-500 shadow-sm hover:bg-red-500/10 hover:cursor-pointer  px-4 py-1.5 flex items-center gap-2 rounded-md"
               >
                 <p>Signout</p>
-                <LogOutIcon />{" "}
+                <LogOutIcon size={14} />{" "}
               </button>
             </>
           ) : (
@@ -120,18 +120,18 @@ const Header = () => {
           )}
         </div>
 
-        <button className="md:hidden" onClick={() => setOpen((pre) => !pre)}>
-          {open ? (
-            <MenuIcon className="text-neutral-900" />
-          ) : (
+        <button className="md:hidden" onClick={() => setIsMenuOpen((pre) => !pre)}>
+          {isMenuOpen ? (
             <X className="text-neutral-900" />
+          ) : (
+            <MenuIcon className="text-neutral-900" />
           )}
         </button>
       </div>
       <div
         className={cn(
           "absolute inset-x-0 flex flex-col md:hidden gap-6 py-6 items-center bg-linear-to-b from-violet-200 to-fuchsia-200 border-b border-t border-white/60 transition-transform origin-top ease-in-out duration-500",
-          open ? "scale-y-0" : "scale-y-full",
+          isMenuOpen ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible",
         )}
       >
         {navItems.map((item) => (

@@ -137,6 +137,9 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--muted-foreground);
   }
+  .fade-in-animation {
+    @apply relative z-10 animate-in fade-in zoom-in-95 duration-1000;
+  }
 }
 
 @layer base {

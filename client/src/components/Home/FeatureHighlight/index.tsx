@@ -49,15 +49,24 @@ const features = [
 
 const FeatureHighlight = () => {
   return (
-    <div className="bg-linear-to-b from-violet-100  to-white pt-10 pb-20">
+    <div className="bg-gray-50 py-16 md:py-20">
       <div className="max-w-6xl w-11/12 md:w-fit mx-auto">
-        <h3 className="text-neutral-700 text-2xl mb-2">
-          Everything you need to stay on track
-        </h3>
-        <p className="text-neutral-600 mb-16">
-          Built for teams that move fast and need clarity.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-fit mx-auto gap-10">
+        <div className="text-center fade-in-animation mb-10 md:mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h3 className="text-violet-600 font-semibold tracking-wider uppercase text-sm mb-4">
+            Platform Features
+          </h3>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 mb-6 tracking-tight">
+            Everything you need to{" "}
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-600 to-fuchsia-600">
+              stay on track
+            </span>
+          </h2>
+          <p className="text-neutral-500 max-w-2xl mx-auto">
+            Built for teams that move fast and need clarity. Our tools are
+            designed to streamline your workflow and boost productivity.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-fit mx-auto gap-8 md:gap-10">
           {features.map((item) => (
             <FeatureCard
               key={item.name}
