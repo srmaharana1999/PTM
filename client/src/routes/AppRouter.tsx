@@ -21,6 +21,7 @@ import ProfilePage from "@/pages/ProfilePage";
 import NotFoundPage from "@/pages/NotFoundPage";
 
 import ProjectMembersPage from "@/pages/ProjectMembersPage";
+import HomePage from "@/pages/Home";
 
 /**
  * AppRouter — central route configuration.
@@ -35,6 +36,7 @@ import ProjectMembersPage from "@/pages/ProjectMembersPage";
 const AppRouter = () => {
   return (
     <Routes>
+      <Route index element={<HomePage />} />
       {/* ── Guest-only routes ──────────────────────────────── */}
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<Login />} />
@@ -50,8 +52,14 @@ const AppRouter = () => {
           <Route path="/projects" element={<ProjectsListPage />} />
           <Route path="/projects/new" element={<CreateProjectPage />} />
           <Route path="/projects/:id" element={<ProjectDetailPage />} />
-          <Route path="/projects/:id/settings" element={<ProjectSettingsPage />} />
-          <Route path="/projects/:id/members" element={<ProjectMembersPage />} />
+          <Route
+            path="/projects/:id/settings"
+            element={<ProjectSettingsPage />}
+          />
+          <Route
+            path="/projects/:id/members"
+            element={<ProjectMembersPage />}
+          />
 
           {/* Profile */}
           <Route path="/profile" element={<ProfilePage />} />

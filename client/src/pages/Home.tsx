@@ -1,13 +1,14 @@
+import { CTASection, FeatureHighlight, Header, Hero } from "@/components/Home";
 
-const Home = () => {
+const HomePage = () => {
   return (
-    <div className="max-w-7xl w-11/12 mx-auto mt-30">
-      <h1 className="text-3xl font-bold leading-relaxed">
-        Welcome,{" "}
-        <strong className="capitalize max-sm:block">John Doe 👋</strong>
-      </h1>
-    </div>
+    <>
+      <Header />
+      <Hero />
+      <FeatureHighlight />
+      <CTASection />
+    </>
   );
 };
 
-export default Home;
+export default HomePage;
