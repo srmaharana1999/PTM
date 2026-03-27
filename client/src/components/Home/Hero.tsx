@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <div className="text-black max-w-7xl w-11/12  mx-auto flex flex-col gap-8">
+    <div className="text-black pt-20 mx-auto flex flex-col gap-8 bg-linear-to-b from-fuchsia-100 via-fuchsia-200 to-violet-100 pb-10">
       <div className=" bg-blue-200/60 border shadow-sm mt-10 border-blue-300/50 py-0.5 pr-4 rounded-full mx-auto w-fit ">
         <p className="text-blue-500 font-semibold relative before:absolute pl-8 before:top-1/3 before:left-3 before:rounded before:bg-violet-600 before:content[''] before:h-2 before:w-2">
           Project Tracking Manager
@@ -24,24 +24,20 @@ const Hero = () => {
       <div className="flex max-sm:flex-col items-center mx-auto gap-6 my-8">
         <NavLink
           to="/dashboard"
-          className="px-3 w-fit py-1.5 hover:bg-pink-200/30 border shadow-md backdrop-blur-3xl border-neutral-700 rounded-md"
+          className="px-4 py-1.5 flex items-center justify-evenly text-white bg-linear-to-br opacity-90 hover:opacity-100 from-blue-600 to-pink-400 gap-2 w-fit shadow-md backdrop-blur-3xl  rounded-md"
         >
           Go To Dashboard
         </NavLink>
         <NavLink
           to="#"
-          className="px-4 py-1.5 flex items-center justify-evenly text-white bg-linear-to-br from-blue-600 to-pink-400 gap-2 w-fit shadow-md backdrop-blur-3xl  rounded-md"
+          className="px-2 py-1.5 flex items-center justify-evenly hover:bg-pink-200/30 border shadow-md backdrop-blur-3xl border-neutral-700 rounded-md"
         >
           <p>See How it Works</p>
           <LucideChevronsDown />
         </NavLink>
       </div>
-      <div className=" rounded-3xl overflow-hidden w-11/12 md:w-10/12 mx-auto border-8 border-white">
-        <img
-          src="/src/assets/dashboard.png"
-          alt="ptm_dashboard_snapshot"
-          className=""
-        />
+      <div className="shadow-2xl max-w-5xl rounded-3xl overflow-hidden w-11/12 mx-auto border-8 border-white">
+        <img src="/src/assets/dashboard.png" alt="ptm_dashboard_snapshot" />
       </div>
     </div>
   );

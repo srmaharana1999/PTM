@@ -55,14 +55,14 @@ const Header = () => {
   return (
     <nav
       className={cn(
-        "sticky mx-auto inset-0 top-0 z-30",
-        scrolled ? "w-full bg-white shadow-md" : "max-w-7xl",
+        "fixed mx-auto h-fit inset-0 top-0 z-30",
+        scrolled ? "w-full bg-white shadow-md" : "max-w-6xl w-full",
       )}
     >
       <div
         // className="h-20 max-w-7xl mx-auto px-6 flex items-center justify-between"
         className={cn(
-          "h-16 max-w-7xl mx-auto px-6 flex items-center justify-between",
+          "h-16 max-w-6xl mx-auto px-6 flex items-center justify-between",
         )}
       >
         <div className="bg-radial border-2 border-neutral-white from-violet-600 to-fuchsia-700 drop-shadow-sm drop-shadow-blue-400 w-fit h-12 aspect-square rounded-2xl flex items-center justify-center">

@@ -50,7 +50,7 @@ const features = [
 const FeatureHighlight = () => {
   return (
     <div className="bg-linear-to-b from-violet-100  to-white pt-10 pb-20">
-      <div className=" w-11/12 md:w-fit mx-auto">
+      <div className="max-w-6xl w-11/12 md:w-fit mx-auto">
         <h3 className="text-neutral-700 text-2xl mb-2">
           Everything you need to stay on track
         </h3>
