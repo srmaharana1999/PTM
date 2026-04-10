@@ -13,7 +13,6 @@ export interface IRefreshTokenPayload {
 
 // User Interface
 
-
 export interface IUser extends Document {
   name: string;
   email: string;
@@ -108,4 +107,21 @@ export interface IProjectMember extends Document {
   user: mongoose.Types.ObjectId;
   project: mongoose.Types.ObjectId;
   role: ProjectRole;
+}
+
+// Sprint
+
+export enum SprintStatus {
+  PLANNED = "planned",
+  ACTIVE = "active",
+  COMPLETED = "completed",
+}
+
+export interface ISprint extends Document {
+  name: string;
+  projectId: mongoose.Types.ObjectId;
+  startDate: Date;
+  endDate: Date;
+  status: SprintStatus;
+  tasks: mongoose.Types.ObjectId[];
 }

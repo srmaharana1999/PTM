@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import projectRoutes from "./routes/projectRoutes";
 import projectMemberRoutes from "./routes/projectMemberRoutes";
+import sprintRoutes from "./routes/sprintRoutes";
 import {
   notFoundHandler,
   globalErrorHandler,
@@ -33,7 +34,6 @@ const corsOptions: cors.CorsOptions = {
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 };
 
-
 // Apply CORS to all routes (also handles OPTIONS preflight automatically)
 app.use(cors(corsOptions));
 
@@ -56,6 +56,9 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/projects", projectRoutes);
 // Project Member router
 app.use("/api/membership", projectMemberRoutes);
+// Sprint routes
+app.use("/api/sprint", sprintRoutes);
+
 
 // 404 — must come AFTER all route registrations
 app.use(notFoundHandler);
