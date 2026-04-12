@@ -7,6 +7,7 @@ import {
   startSprint,
   completeSprint,
   addTasksToSprint,
+  removeTasksFromSprint,
   deleteSprint,
 } from "../controllers/sprintController";
 
@@ -29,6 +30,9 @@ router.patch("/:id/complete", requireAuth, completeSprint);
 
 // Add tasks to a sprint
 router.patch("/:id/tasks", requireAuth, addTasksToSprint);
+
+// Remove tasks from a sprint
+router.delete("/:id/tasks", requireAuth, removeTasksFromSprint);
 
 // Delete a sprint
 router.delete("/:id", requireAuth, deleteSprint);
